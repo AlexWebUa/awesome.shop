@@ -7,6 +7,7 @@ class Router
      * Binds routes to actions
      */
     private $routes = [
+        'product/([0-9]+)' => 'product/view/$1',
         '' => 'site/index',
     ];
 

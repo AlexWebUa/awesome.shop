@@ -11,7 +11,7 @@ $router = new Router();
 $router->run();
 
 
-// TODO: db, products, cart, user-panel, admin-panel
+// TODO: products, cart, user-panel, admin-panel
 
 
 /*
