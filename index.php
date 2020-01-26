@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 define('ROOT', dirname(__FILE__));
 
 require_once(ROOT . '/core/Router.php');
+require_once(ROOT.'/core/Db.php');
 
 
 $router = new Router();

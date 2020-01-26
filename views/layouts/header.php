@@ -13,7 +13,7 @@
 <header>
     <div class="header-logo">
         <h1>
-            <a href="#">Awesome.shop</a>
+            <a href="/">Awesome.shop</a>
         </h1>
     </div>
     <ul class="user-block">

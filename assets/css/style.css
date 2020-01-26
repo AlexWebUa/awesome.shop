@@ -63,6 +63,20 @@ section.products {
     margin: 5px 0;
 }
 
+.single-product {
+    margin-left: 15px;
+}
+
+.single-product h2 {
+    font-size: 2em;
+    text-align: left;
+}
+
+.single-product .to-cart {
+    padding: 20px;
+    font-size: 18px;
+}
+
 footer {
     text-align: center;
     margin: 5px 0;

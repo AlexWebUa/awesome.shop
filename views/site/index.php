@@ -4,18 +4,20 @@
     <h2>Каталог товаров</h2>
     <section class="products">
 
+        <?php foreach($latestProducts as $product): ?>
         <div class="product">
             <img src="/assets/images/product-photo.png" alt="" class="product-image">
             <h3>
-                <a href="#" class="product-name">Test product</a>
+                <a href="<?= '/product/' . $product['id'] ?>" class="product-name"><?= $product['name']; ?></a>
             </h3>
-            <p class="product-price">248$</p>
+            <p class="product-price"><?= $product['price']; ?>$</p>
             <p class="product-short-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam, repudiandae.</p>
             <button class="to-cart">Add to cart</button>
-
-            <img src="/assets/images/new.png" alt="" class="new">
-
+            <?php if ($product['is_new']): ?>
+                <img src="/assets/images/new.png" alt="" class="new">
+            <?php endif; ?>
         </div>
+        <?php endforeach;?>
 
     </section>
 </main>
