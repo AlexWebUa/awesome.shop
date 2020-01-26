@@ -24,7 +24,7 @@
             <a href="#">Вход</a>
         </li>
         <li class="register">
-            <a href="#">Регистрация</a>
+            <a href="/user/register/">Регистрация</a>
         </li>
     </ul>
 </header>
