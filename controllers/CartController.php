@@ -40,4 +40,23 @@ class CartController
         return true;
     }
 
+    /**
+     * Clear all cart
+     */
+    public function actionClear() {
+        Cart::clear();
+    }
+
+    /**
+     * Deletes product with specified id from cart
+     * @param $id
+     */
+    public function actionDelete($id)
+    {
+        Cart::deleteProduct($id);
+
+        header("Location: /cart");
+    }
+
+
 }

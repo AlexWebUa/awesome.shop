@@ -78,4 +78,25 @@ class Cart
         return $total;
     }
 
+    /**
+     * Clear all cart in session
+     */
+    public static function clear()
+    {
+        if (isset($_SESSION['products'])) {
+            unset($_SESSION['products']);
+        }
+    }
+
+    /**
+     * Deletes product with specified id from cart
+     * @param $id
+     */
+    public static function deleteProduct($id)
+    {
+        $productsInCart = self::getProducts();
+        unset($productsInCart[$id]);
+        $_SESSION['products'] = $productsInCart;
+    }
+
 }
