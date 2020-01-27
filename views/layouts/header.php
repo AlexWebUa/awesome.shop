@@ -18,7 +18,10 @@
     </div>
     <ul class="user-block">
         <li class="cart">
-            <a href="#">Корзина</a>
+            <a href="/cart/">
+                Корзина
+                <span id="cart-count">(<?= Cart::countItems(); ?>)</span>
+            </a>
         </li>
         <?php if (User::isGuest()): ?>
             <li class="login">

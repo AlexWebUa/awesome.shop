@@ -57,6 +57,40 @@ class Product
         }
     }
 
+    /**
+     * Returns products info from db
+     * @param $idsArray
+     * @return array
+     */
+    public static function getProductsByIds($idsArray)
+    {
+        $products = array();
+
+        $db = Db::getConnection();
+
+        $idsString = implode(',', $idsArray);
+
+        $sql = "SELECT * FROM products WHERE is_available='1' AND id IN ($idsString)";
+
+        $result = $db->query($sql);
+        $result->setFetchMode(PDO::FETCH_ASSOC);
+
+        $i = 0;
+        while ($row = $result->fetch()) {
+            $products[$i]['id'] = $row['id'];
+            $products[$i]['name'] = $row['name'];
+            $products[$i]['code'] = $row['code'];
+            $products[$i]['price'] = $row['price'];
+            $products[$i]['brand'] = $row['brand'];
+            $products[$i]['image'] = $row['image'];
+            $products[$i]['description'] = $row['description'];
+            $products[$i]['is_new'] = $row['is_new'];
+            $i++;
+        }
+
+        return $products;
+    }
+
 }
 
-// TODO: getImage() [, getShortDescription(), getPrice()]
+// TODO: getImage() [, getShortDescription(), getPrice()], fetchResult()
