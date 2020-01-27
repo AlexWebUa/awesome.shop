@@ -86,6 +86,87 @@ class User
         return false;
     }
 
+    /**
+     * Checks if user with specified email and password exists in db
+     * @param $email
+     * @param $password
+     * @return bool
+     */
+    public static function checkUserData($email, $password)
+    {
+        $db = Db::getConnection();
+
+        $sql = 'SELECT * FROM users WHERE email = :email AND password = :password';
+
+        $result = $db->prepare($sql);
+        $result->bindParam(':email', $email, PDO::PARAM_STR);
+        $result->bindParam(':password', $password, PDO::PARAM_STR);
+        $result->execute();
+
+        $user = $result->fetch();
+        if ($user) {
+            return $user['id'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Add user id in session
+     * @param $userId
+     */
+    public static function auth($userId)
+    {
+        $_SESSION['user'] = $userId;
+    }
+
+    /**
+     * Checks if user id is in session
+     * @return mixed
+     */
+    public static function checkLogged()
+    {
+        if (isset($_SESSION['user'])) {
+            return $_SESSION['user'];
+        }
+
+        header("Location: /user/login");
+    }
+
+    /**
+     * Returns user by id
+     * @param $id
+     * @return mixed
+     */
+    public static function getUserById($id)
+    {
+        if ($id) {
+            $db = Db::getConnection();
+            $sql = 'SELECT * FROM users WHERE id = :id';
+
+            $result = $db->prepare($sql);
+            $result->bindParam(':id', $id, PDO::PARAM_INT);
+
+            $result->setFetchMode(PDO::FETCH_ASSOC);
+            $result->execute();
+
+
+            return $result->fetch();
+        }
+    }
+
+    /**
+     * Checks if user id is not in session
+     * @return bool
+     */
+    public static function isGuest()
+    {
+        if (isset($_SESSION['user'])) {
+            return false;
+        }
+        return true;
+    }
+
 }
 
-//TODO: hash passwords before adding to db
+//TODO: hash passwords before adding to db, isAdmin()

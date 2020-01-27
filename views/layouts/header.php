@@ -20,11 +20,20 @@
         <li class="cart">
             <a href="#">Корзина</a>
         </li>
-        <li class="login">
-            <a href="#">Вход</a>
-        </li>
-        <li class="register">
-            <a href="/user/register/">Регистрация</a>
-        </li>
+        <?php if (User::isGuest()): ?>
+            <li class="login">
+                <a href="/user/login/">Вход</a>
+            </li>
+            <li class="register">
+                <a href="/user/register/">Регистрация</a>
+            </li>
+        <?php else: ?>
+            <li class="cabinet">
+                <a href="/cabinet/">Кабинет</a>
+            </li>
+            <li class="login">
+                <a href="/user/logout/">Выход</a>
+            </li>
+        <?php endif; ?>
     </ul>
 </header>

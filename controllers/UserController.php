@@ -63,4 +63,54 @@ class UserController
         return $errors;
     }
 
+    /**
+     * Checks validity of login form and redirects to cabinet if it's correct
+     * @return bool
+     */
+    public function actionLogin()
+    {
+        $email = '';
+        $password = '';
+
+        if (isset($_POST['submit'])) {
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+
+            $errors = false;
+
+            if (!User::checkEmail($email)) {
+                $errors[] = 'Неправильный email';
+            }
+            if (!User::checkPassword($password)) {
+                $errors[] = 'Пароль не может быть короче 6-ти символов';
+            }
+
+            $userId = User::checkUserData($email, $password);
+
+            if ($userId == false) {
+                $errors[] = 'Пользователь не найден!';
+            } else {
+                User::auth($userId);
+
+                header("Location: /cabinet/");
+            }
+
+        }
+
+        require_once(ROOT . '/views/user/login.php');
+
+        return true;
+    }
+
+    /**
+     * Unset session 'user'
+     */
+    public function actionLogout()
+    {
+        unset($_SESSION["user"]);
+        header("Location: /");
+    }
+
 }
+
+// TODO: maybe split validation for each field?
