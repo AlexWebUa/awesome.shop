@@ -91,6 +91,100 @@ class Product
         return $products;
     }
 
+    /**
+     * Get all products from db
+     * @return array
+     */
+    public static function getProductsList()
+    {
+        $db = Db::getConnection();
+
+        $result = $db->query('SELECT * FROM products ORDER BY id ASC');
+        $productsList = array();
+        $i = 0;
+        while ($row = $result->fetch()) {
+            $productsList[$i]['id'] = $row['id'];
+            $productsList[$i]['name'] = $row['name'];
+            $productsList[$i]['code'] = $row['code'];
+            $productsList[$i]['price'] = $row['price'];
+            $productsList[$i]['brand'] = $row['brand'];
+            $productsList[$i]['image'] = $row['image'];
+            $productsList[$i]['description'] = $row['description'];
+            $productsList[$i]['is_new'] = $row['is_new'];
+            $i++;
+        }
+        return $productsList;
+    }
+
+    /**
+     * Add product in db
+     * @param $options
+     * @return int|string
+     */
+    public static function addProduct($options)
+    {
+        $db = Db::getConnection();
+
+        $sql = 'INSERT INTO products '
+            . '(name, code, price, brand, image, description, is_available, is_new)'
+            . 'VALUES '
+            . '(:name, :code, :price, :brand, :image, :description, :is_available, :is_new)';
+
+        $result = $db->prepare($sql);
+        $result->bindParam(':name', $options['name'], PDO::PARAM_STR);
+        $result->bindParam(':code', $options['code'], PDO::PARAM_STR);
+        $result->bindParam(':price', $options['price'], PDO::PARAM_STR);
+        $result->bindParam(':brand', $options['brand'], PDO::PARAM_STR);
+        $result->bindParam(':image', $options['image'], PDO::PARAM_STR);
+        $result->bindParam(':description', $options['description'], PDO::PARAM_STR);
+        $result->bindParam(':is_available', $options['is_available'], PDO::PARAM_INT);
+        $result->bindParam(':is_new', $options['is_new'], PDO::PARAM_INT);
+        if ($result->execute()) {
+            return $db->lastInsertId();
+        }
+        return 0;
+    }
+
+    public static function updateProductById($id, $options)
+    {
+        $db = Db::getConnection();
+
+        $sql = "UPDATE products
+            SET 
+                name = :name, 
+                code = :code, 
+                price = :price,  
+                brand = :brand, 
+                image = :image, 
+                description = :description,
+                is_new = :is_new, 
+                is_available = :is_available
+            WHERE id = :id";
+
+        $result = $db->prepare($sql);
+        $result->bindParam(':id', $id, PDO::PARAM_INT);
+        $result->bindParam(':name', $options['name'], PDO::PARAM_STR);
+        $result->bindParam(':code', $options['code'], PDO::PARAM_STR);
+        $result->bindParam(':price', $options['price'], PDO::PARAM_STR);
+        $result->bindParam(':brand', $options['brand'], PDO::PARAM_STR);
+        $result->bindParam(':image', $options['image'], PDO::PARAM_STR);
+        $result->bindParam(':description', $options['description'], PDO::PARAM_STR);
+        $result->bindParam(':is_new', $options['is_new'], PDO::PARAM_INT);
+        $result->bindParam(':is_available', $options['is_available'], PDO::PARAM_INT);
+        return $result->execute();
+    }
+
+    public static function deleteProductById($id)
+    {
+        $db = Db::getConnection();
+
+        $sql = 'DELETE FROM products WHERE id = :id';
+
+        $result = $db->prepare($sql);
+        $result->bindParam(':id', $id, PDO::PARAM_INT);
+        return $result->execute();
+    }
+
 }
 
 // TODO: getImage() [, getShortDescription(), getPrice()], fetchResult()

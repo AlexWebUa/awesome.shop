@@ -15,6 +15,9 @@ class Router
         'user/register' => 'user/register',
         'user/login' => 'user/login',
         'user/logout' => 'user/logout',
+        'cabinet/add' => 'cabinet/add',
+        'cabinet/update/([0-9]+)' => 'cabinet/update/$1',
+        'cabinet/delete/([0-9]+)' => 'cabinet/delete/$1',
         'cabinet' => 'cabinet/index',
         '' => 'site/index',
     ];

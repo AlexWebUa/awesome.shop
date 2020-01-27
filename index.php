@@ -13,7 +13,7 @@ $router = new Router();
 $router->run();
 
 
-// TODO: cart, admin-panel
+// TODO: remove code-smell, finish all other todos
 
 
 /*

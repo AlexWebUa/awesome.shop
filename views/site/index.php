@@ -6,7 +6,8 @@
 
         <?php foreach ($latestProducts as $product): ?>
             <div class="product">
-                <img src="/assets/images/product-photo.png" alt="" class="product-image">
+                <img src="/uploads/images/<?= $product['image'] ?>" alt="<?= $product['image'] ?>"
+                     class="product-image">
                 <h3>
                     <a href="<?= '/product/' . $product['id'] ?>" class="product-name"><?= $product['name']; ?></a>
                 </h3>
