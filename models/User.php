@@ -131,6 +131,8 @@ class User
         }
 
         header("Location: /user/login");
+
+        return true;
     }
 
     /**
@@ -153,6 +155,8 @@ class User
 
             return $result->fetch();
         }
+
+        return false;
     }
 
     /**
@@ -168,5 +172,3 @@ class User
     }
 
 }
-
-//TODO: hash passwords before adding to db, isAdmin()

@@ -4,7 +4,7 @@
     <h2>Корзина</h2>
     <?php if ($productsInCart): ?>
         <p>Вы выбрали такие товары:</p>
-        <table class="table-bordered table-striped table">
+        <table>
             <tr>
                 <th>Код товара</th>
                 <th>Название</th>
@@ -14,16 +14,16 @@
             </tr>
             <?php foreach ($products as $product): ?>
                 <tr>
-                    <td><?php echo $product['code'];?></td>
+                    <td><?php echo $product['code']; ?></td>
                     <td>
-                        <a href="/product/<?php echo $product['id'];?>">
-                            <?php echo $product['name'];?>
+                        <a href="/product/<?php echo $product['id']; ?>">
+                            <?php echo $product['name']; ?>
                         </a>
                     </td>
-                    <td><?php echo $product['price'];?></td>
-                    <td><?php echo $productsInCart[$product['id']];?></td>
+                    <td><?php echo $product['price']; ?></td>
+                    <td><?php echo $productsInCart[$product['id']]; ?></td>
                     <td>
-                        <a class="checkout" href="/cart/delete/<?php echo $product['id'];?>">
+                        <a class="checkout" href="/cart/delete/<?php echo $product['id']; ?>">
                             <span>X</span>
                         </a>
                     </td>
@@ -31,7 +31,7 @@
             <?php endforeach; ?>
             <tr>
                 <td colspan="4">Общая стоимость, грн:</td>
-                <td><?php echo $totalPrice;?></td>
+                <td><?php echo $totalPrice; ?></td>
             </tr>
         </table>
         <p>

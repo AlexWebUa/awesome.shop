@@ -12,8 +12,7 @@
                     <a href="<?= '/product/' . $product['id'] ?>" class="product-name"><?= $product['name']; ?></a>
                 </h3>
                 <p class="product-price"><?= $product['price']; ?>$</p>
-                <p class="product-short-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam,
-                    repudiandae.</p>
+                <p class="product-short-description"><?= $product['description'] ?></p>
                 <button class="to-cart">
                     <a href="/cart/add/<?= $product['id']; ?>">В корзину</a>
                 </button>

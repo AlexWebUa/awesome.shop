@@ -7,20 +7,13 @@ class Product
     const SHOW_BY_DEFAULT = 10;
 
     /**
-     * Returns an array of products
-     * @param int $count
+     * Splits data from the resulting array into an associative array
+     * @param $result
      * @return array
      */
-    public static function getLatestProducts($count = self::SHOW_BY_DEFAULT)
+    public static function fetchResult($result)
     {
-        $count = intval($count);
-        $db = Db::getConnection();
         $productsList = array();
-
-        $result = $db->query('SELECT * FROM products '
-            . 'WHERE is_available = "1"'
-            . 'ORDER BY id DESC '
-            . 'LIMIT ' . $count);
 
         $i = 0;
         while ($row = $result->fetch()) {
@@ -36,6 +29,24 @@ class Product
         }
 
         return $productsList;
+    }
+
+    /**
+     * Returns an array of products
+     * @param int $count
+     * @return array
+     */
+    public static function getLatestProducts($count = self::SHOW_BY_DEFAULT)
+    {
+        $count = intval($count);
+        $db = Db::getConnection();
+
+        $result = $db->query('SELECT * FROM products '
+            . 'WHERE is_available = "1"'
+            . 'ORDER BY id DESC '
+            . 'LIMIT ' . $count);
+
+        return self::fetchResult($result);
     }
 
     /**
@@ -55,6 +66,8 @@ class Product
 
             return $result->fetch();
         }
+
+        return false;
     }
 
     /**
@@ -75,20 +88,7 @@ class Product
         $result = $db->query($sql);
         $result->setFetchMode(PDO::FETCH_ASSOC);
 
-        $i = 0;
-        while ($row = $result->fetch()) {
-            $products[$i]['id'] = $row['id'];
-            $products[$i]['name'] = $row['name'];
-            $products[$i]['code'] = $row['code'];
-            $products[$i]['price'] = $row['price'];
-            $products[$i]['brand'] = $row['brand'];
-            $products[$i]['image'] = $row['image'];
-            $products[$i]['description'] = $row['description'];
-            $products[$i]['is_new'] = $row['is_new'];
-            $i++;
-        }
-
-        return $products;
+        return self::fetchResult($result);
     }
 
     /**
@@ -100,20 +100,8 @@ class Product
         $db = Db::getConnection();
 
         $result = $db->query('SELECT * FROM products ORDER BY id ASC');
-        $productsList = array();
-        $i = 0;
-        while ($row = $result->fetch()) {
-            $productsList[$i]['id'] = $row['id'];
-            $productsList[$i]['name'] = $row['name'];
-            $productsList[$i]['code'] = $row['code'];
-            $productsList[$i]['price'] = $row['price'];
-            $productsList[$i]['brand'] = $row['brand'];
-            $productsList[$i]['image'] = $row['image'];
-            $productsList[$i]['description'] = $row['description'];
-            $productsList[$i]['is_new'] = $row['is_new'];
-            $i++;
-        }
-        return $productsList;
+
+        return self::fetchResult($result);
     }
 
     /**
@@ -186,5 +174,3 @@ class Product
     }
 
 }
-
-// TODO: getImage() [, getShortDescription(), getPrice()], fetchResult()

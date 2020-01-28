@@ -51,6 +51,11 @@ section.products {
     align-self: center;
 }
 
+.product .product-short-description {
+    max-height: 150px;
+    overflow: hidden;
+}
+
 .product .new {
     position: absolute;
     top: 0;
@@ -106,13 +111,13 @@ form input {
     font-size: 20px;
 }
 
-.cabinet table {
+table {
     border-collapse: collapse;
     margin: auto;
     text-align: center;
 }
 
-.cabinet table td, .cabinet table th {
+table td, table th {
     border: 1px solid gray;
     padding: 10px;
 }
