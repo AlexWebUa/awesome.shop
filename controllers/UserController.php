@@ -112,5 +112,3 @@ class UserController
     }
 
 }
-
-// TODO: maybe split validation for each field?

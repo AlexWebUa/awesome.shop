@@ -45,8 +45,13 @@ class CabinetController
 
             $errors = false;
 
-            if (!isset($options['name']) || empty($options['name'])) {
-                $errors[] = 'Заполните поля';
+            if (!isset($options['name']) || empty($options['name']) ||
+                !isset($options['code']) || empty($options['code']) ||
+                !isset($options['price']) || empty($options['price']) ||
+                !isset($options['brand']) || empty($options['brand']) ||
+                !isset($options['description']) || empty($options['description'])
+            ) {
+                $errors[] = 'Заполните все поля';
             }
 
             if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
@@ -65,7 +70,7 @@ class CabinetController
                     if (is_uploaded_file($_FILES["image"]["tmp_name"])) {
                         move_uploaded_file($_FILES["image"]["tmp_name"], $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$imageName}");
                     }
-                };
+                }
 
                 header("Location: /cabinet/");
             }
@@ -93,7 +98,7 @@ class CabinetController
             $options['is_new'] = $_POST['is_new'];
             $options['is_available'] = $_POST['is_available'];
 
-            if (isset($_FILES['image'])) {
+            if (isset($_FILES['image']) && ($_FILES['image']['name'] != '')) {
                 $imageName = $_FILES['image']['name'];
                 $options['image'] = $imageName;
             } else {
@@ -101,7 +106,7 @@ class CabinetController
             }
 
             if (Product::updateProductById($id, $options)) {
-                if ($imageName) {
+                if (isset($imageName)) {
                     move_uploaded_file($imageName, $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/");
                 }
             }
@@ -131,6 +136,3 @@ class CabinetController
     }
 
 }
-
-// TODO: validation for actionAdd(), validation for actionUpdate
-// BUG: when updating product without changing image, it set 'image' field in db to ''
