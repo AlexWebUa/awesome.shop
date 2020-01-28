@@ -46,8 +46,8 @@ section.products {
 }
 
 .product .product-image {
-    max-width: 315px;
-    height: auto;
+    width: 315px;
+    height: 315px;
     align-self: center;
 }
 
@@ -82,4 +82,37 @@ footer {
     margin: 5px 0;
 }
 
-/*TODO: add styles for register page, login page, cart page, add product page, update product page, delete product page*/
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+    margin: auto;
+}
+
+form input {
+    border: 2px solid #eee;
+    border-radius: 5px;
+    background: #eee;
+    padding: 5px;
+    margin: 10px 0;
+}
+
+.cabinet {
+    padding: 0 20px;
+}
+
+.cabinet h4 {
+    margin: 10px 0;
+    font-size: 20px;
+}
+
+.cabinet table {
+    border-collapse: collapse;
+    margin: auto;
+    text-align: center;
+}
+
+.cabinet table td, .cabinet table th {
+    border: 1px solid gray;
+    padding: 10px;
+}

@@ -4,7 +4,7 @@
     <h2>Кабинет пользователя <?= $user['name'] ?></h2>
     <section class="cabinet">
         <?php if ($user['is_admin'] == '1') : ?>
-            <a href="/cabinet/add" class="btn btn-default back">Добавить товар</a>
+            <a href="/cabinet/add" class="add-product">Добавить товар</a>
 
             <h4>Список товаров</h4>
 
