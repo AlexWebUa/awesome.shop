@@ -74,6 +74,8 @@ class Router
 
                 if ($result != null) {
                     break;
+                } else {
+                    call_user_func_array(array(new SiteController, 'actionIndex'), []);
                 }
             }
         }

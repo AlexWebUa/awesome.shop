@@ -6,9 +6,9 @@ class Db
 
     private static $params = [
         'host' => 'localhost',
-        'dbname' => 'awesome_shop',
-        'user' => 'root',
-        'password' => '',
+        'dbname' => 'shop',
+        'user' => 'admin',
+        'password' => '123456',
     ];
 
     public static function getConnection()
