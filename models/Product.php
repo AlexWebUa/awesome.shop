@@ -7,46 +7,23 @@ class Product
     const SHOW_BY_DEFAULT = 10;
 
     /**
-     * Splits data from the resulting array into an associative array
-     * @param $result
-     * @return array
-     */
-    public static function fetchResult($result)
-    {
-        $productsList = array();
-
-        $i = 0;
-        while ($row = $result->fetch()) {
-            $productsList[$i]['id'] = $row['id'];
-            $productsList[$i]['name'] = $row['name'];
-            $productsList[$i]['code'] = $row['code'];
-            $productsList[$i]['price'] = $row['price'];
-            $productsList[$i]['brand'] = $row['brand'];
-            $productsList[$i]['image'] = $row['image'];
-            $productsList[$i]['description'] = $row['description'];
-            $productsList[$i]['is_new'] = $row['is_new'];
-            $i++;
-        }
-
-        return $productsList;
-    }
-
-    /**
-     * Returns an array of products
+     * Returns an array of latest products
      * @param int $count
      * @return array
      */
-    public static function getLatestProducts($count = self::SHOW_BY_DEFAULT)
+    public static function getLatest(int $count = self::SHOW_BY_DEFAULT)
     {
         $count = intval($count);
         $db = Db::getConnection();
 
-        $result = $db->query('SELECT * FROM products '
-            . 'WHERE is_available = "1"'
+        $result = $db->query('SELECT * FROM product '
+            . 'LEFT JOIN discount ON product.id = discount.productId '
             . 'ORDER BY id DESC '
             . 'LIMIT ' . $count);
 
-        return self::fetchResult($result);
+        $result->setFetchMode(PDO::FETCH_ASSOC);
+
+        return $result->fetchAll();
     }
 
     /**
@@ -54,62 +31,90 @@ class Product
      * @param integer $id
      * @return mixed
      */
-    public static function getProductById($id)
+    public static function getById(int $id)
     {
         $id = intval($id);
 
         if ($id) {
             $db = Db::getConnection();
 
-            $result = $db->query('SELECT * FROM products WHERE id=' . $id);
-            $result->setFetchMode(PDO::FETCH_ASSOC);
+            /*** Product ***/
+            $product = $db->query(
+                'SELECT product.*, active_products.isActive, storage.quantity '
+                . 'FROM product '
+                . 'LEFT JOIN active_products ON product.id = active_products.productId ' // isActive
+                . 'LEFT JOIN storage ON product.id = storage.productId ' // quantity
+                . 'WHERE product.id = ' . $id
+            );
+            $product->setFetchMode(PDO::FETCH_ASSOC);
+            $result = $product->fetch();
 
-            return $result->fetch();
+            /*** Categories ***/
+            $product_category = $db->query(
+                'SELECT categoryId FROM product_category where productId =' . $result['id']
+            );
+            $categoryId = $product_category->fetch()['categoryId'];
+            $category = Category::getById($categoryId);
+            $result['category'] = Category::getParentCategories($category);
+
+            /*** Features ***/
+            $features = $db->query(
+                'SELECT feature.title, product_feature.value '
+                . 'FROM product_feature '
+                . 'LEFT JOIN feature ON product_feature.productId = ' . $id
+                . ' AND feature.id = product_feature.featureId'
+            );
+            $features->setFetchMode(PDO::FETCH_ASSOC);
+            $result['features'] = $features->fetchAll();
+
+            /*** Tags ***/
+            $tags = $db->query(
+                'SELECT title FROM ( '
+                . 'SELECT product_tag.*, tag.title '
+                . 'FROM product_tag '
+                . 'LEFT JOIN tag ON product_tag.tagId = tag.id '
+                . 'WHERE product_tag.productId =' . $id
+                . ') AS t1'
+            );
+            $tags->setFetchMode(PDO::FETCH_ASSOC);
+            $result['tags'] = $tags->fetchAll();
+
+            /*** Discounts ***/
+            $result['discounts'] = Discount::getRecentDiscounts($id);
+
+            /*** Images ***/
+            $images = $db->query(
+                'SELECT images.url FROM images WHERE images.productId =' . $id
+            );
+            $images->setFetchMode(PDO::FETCH_ASSOC);
+            $result['images'] = $images->fetchAll();
+
+
+            return $result;
         }
 
         return false;
     }
 
     /**
-     * Returns products info from db
-     * @param $idsArray
-     * @return array
-     */
-    public static function getProductsByIds($idsArray)
-    {
-        $products = array();
-
-        $db = Db::getConnection();
-
-        $idsString = implode(',', $idsArray);
-
-        $sql = "SELECT * FROM products WHERE is_available='1' AND id IN ($idsString)";
-
-        $result = $db->query($sql);
-        $result->setFetchMode(PDO::FETCH_ASSOC);
-
-        return self::fetchResult($result);
-    }
-
-    /**
      * Get all products from db
      * @return array
      */
-    public static function getProductsList()
+    /*public static function getAll()
     {
         $db = Db::getConnection();
 
-        $result = $db->query('SELECT * FROM products ORDER BY id ASC');
+        $result = $db->query('SELECT * FROM product ORDER BY id ASC');
 
         return self::fetchResult($result);
-    }
+    }*/
 
     /**
      * Add product in db
      * @param $options
      * @return int|string
      */
-    public static function addProduct($options)
+    /*public static function add($options)
     {
         $db = Db::getConnection();
 
@@ -131,9 +136,9 @@ class Product
             return $db->lastInsertId();
         }
         return 0;
-    }
+    }*/
 
-    public static function updateProductById($id, $options)
+    /*public static function update($id, $options)
     {
         $db = Db::getConnection();
 
@@ -160,9 +165,9 @@ class Product
         $result->bindParam(':is_new', $options['is_new'], PDO::PARAM_INT);
         $result->bindParam(':is_available', $options['is_available'], PDO::PARAM_INT);
         return $result->execute();
-    }
+    }*/
 
-    public static function deleteProductById($id)
+    /*public static function delete($id)
     {
         $db = Db::getConnection();
 
@@ -171,6 +176,6 @@ class Product
         $result = $db->prepare($sql);
         $result->bindParam(':id', $id, PDO::PARAM_INT);
         return $result->execute();
-    }
+    }*/
 
 }

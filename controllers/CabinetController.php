@@ -87,7 +87,7 @@ class CabinetController
      */
     public function actionUpdate($id)
     {
-        $product = Product::getProductById($id);
+        $product = Product::getById($id);
 
         if (isset($_POST['submit'])) {
             $options['name'] = $_POST['name'];

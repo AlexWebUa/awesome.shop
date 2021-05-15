@@ -3,22 +3,21 @@
 <main>
     <h2>Каталог товаров</h2>
     <section class="products">
-
         <?php foreach ($latestProducts as $product): ?>
             <div class="product">
-                <img src="/uploads/images/<?= $product['image'] ?>" alt="<?= $product['image'] ?>"
+                <img src="/uploads/images/<?= $product['mainImg'] ?>" alt="<?= $product['mainImg'] ?>"
                      class="product-image">
                 <h3>
-                    <a href="<?= '/product/' . $product['id'] ?>" class="product-name"><?= $product['name']; ?></a>
+                    <a href="<?= '/product/' . $product['id'] ?>" class="product-name"><?= $product['title']; ?></a>
                 </h3>
-                <p class="product-price"><?= $product['price']; ?>$</p>
-                <p class="product-short-description"><?= $product['description'] ?></p>
-                <button class="to-cart">
-                    <a href="/cart/add/<?= $product['id']; ?>">В корзину</a>
-                </button>
-                <?php if ($product['is_new']): ?>
-                    <img src="/assets/images/new.png" alt="" class="new">
+                <p>Description: <?= $product['description'] ?></p>
+                <?php if (!empty($product['metatitle'])) :?>
+                <p>Metatitle: <?= $product['metatitle'] ?></p>
                 <?php endif; ?>
+                <p>Slug: <?= $product['slug'] ?></p>
+                <p>Created at: <?= $product['createdAt'] ?></p>
+                <p>Updated at:<?= $product['updatedAt'] ?></p>
+                <p>Discount: <?= $product['discount'] ?>%</p>
             </div>
         <?php endforeach; ?>
 

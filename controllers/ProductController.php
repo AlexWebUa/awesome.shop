@@ -5,7 +5,7 @@ class ProductController
 
     public function actionView($productId)
     {
-        $product = Product::getProductById($productId);
+        $product = Product::getById($productId);
 
         require_once(ROOT . '/views/product/view.php');
 

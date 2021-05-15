@@ -6,7 +6,7 @@ class Db
 
     private static $params = [
         'host' => 'localhost',
-        'dbname' => 'shop',
+        'dbname' => 'awesomeshop',
         'user' => 'admin',
         'password' => '123456',
     ];
