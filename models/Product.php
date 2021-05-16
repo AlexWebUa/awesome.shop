@@ -16,10 +16,13 @@ class Product
         $count = intval($count);
         $db = Db::getConnection();
 
-        $result = $db->query('SELECT * FROM product '
+        $result = $db->query('SELECT product.*, discount.discount, discount.startDate, discount.finishDate, discount.completedBeforeDeadline, active_products.isActive '
+            . 'FROM product '
+            . 'LEFT JOIN active_products ON product.id = active_products.productId '
             . 'LEFT JOIN discount ON product.id = discount.productId '
             . 'ORDER BY id DESC '
             . 'LIMIT ' . $count);
+        //TODO: recent discounts
 
         $result->setFetchMode(PDO::FETCH_ASSOC);
 
@@ -49,6 +52,7 @@ class Product
             $product->setFetchMode(PDO::FETCH_ASSOC);
             $result = $product->fetch();
 
+
             /*** Categories ***/
             $product_category = $db->query(
                 'SELECT categoryId FROM product_category where productId =' . $result['id']
@@ -57,15 +61,17 @@ class Product
             $category = Category::getById($categoryId);
             $result['category'] = Category::getParentCategories($category);
 
+
             /*** Features ***/
             $features = $db->query(
                 'SELECT feature.title, product_feature.value '
                 . 'FROM product_feature '
                 . 'LEFT JOIN feature ON product_feature.productId = ' . $id
-                . ' AND feature.id = product_feature.featureId'
+                . ' WHERE feature.id = product_feature.featureId'
             );
             $features->setFetchMode(PDO::FETCH_ASSOC);
             $result['features'] = $features->fetchAll();
+
 
             /*** Tags ***/
             $tags = $db->query(
@@ -79,8 +85,10 @@ class Product
             $tags->setFetchMode(PDO::FETCH_ASSOC);
             $result['tags'] = $tags->fetchAll();
 
+
             /*** Discounts ***/
             $result['discounts'] = Discount::getRecentDiscounts($id);
+
 
             /*** Images ***/
             $images = $db->query(
@@ -96,47 +104,74 @@ class Product
         return false;
     }
 
-    /**
-     * Get all products from db
-     * @return array
-     */
-    /*public static function getAll()
-    {
-        $db = Db::getConnection();
-
-        $result = $db->query('SELECT * FROM product ORDER BY id ASC');
-
-        return self::fetchResult($result);
-    }*/
 
     /**
      * Add product in db
      * @param $options
      * @return int|string
      */
-    /*public static function add($options)
+    public static function add($options)
     {
         $db = Db::getConnection();
+        $productId = intval($db->query('SELECT MAX(id) FROM product')->fetchColumn()) + 1;
 
-        $sql = 'INSERT INTO products '
-            . '(name, code, price, brand, image, description, is_available, is_new)'
-            . 'VALUES '
-            . '(:name, :code, :price, :brand, :image, :description, :is_available, :is_new)';
+        /*** Product ***/
+        $productData = [
+            'title' => $options['title'],
+            'description' => $options['description'],
+            'metatitle' => $options['metatitle'],
+            'mainImg' => $options['mainImg'],
+        ];
+        $productSql = 'INSERT INTO product (title, description, metatitle, mainImg) VALUES (:title, :description, :metatitle, :mainImg)';
+        $productInsert = $db->prepare($productSql)->execute($productData);
 
-        $result = $db->prepare($sql);
-        $result->bindParam(':name', $options['name'], PDO::PARAM_STR);
-        $result->bindParam(':code', $options['code'], PDO::PARAM_STR);
-        $result->bindParam(':price', $options['price'], PDO::PARAM_STR);
-        $result->bindParam(':brand', $options['brand'], PDO::PARAM_STR);
-        $result->bindParam(':image', $options['image'], PDO::PARAM_STR);
-        $result->bindParam(':description', $options['description'], PDO::PARAM_STR);
-        $result->bindParam(':is_available', $options['is_available'], PDO::PARAM_INT);
-        $result->bindParam(':is_new', $options['is_new'], PDO::PARAM_INT);
-        if ($result->execute()) {
-            return $db->lastInsertId();
+        /*** Active products ***/
+        $active_productsSql = 'INSERT INTO active_products (productId, isActive) VALUES (' . $productId . ', ' . $options['isActive'] . ')';
+        $active_productsInsert = $db->prepare($active_productsSql)->execute();
+
+        /*** Storage ***/
+        $storageSql = 'INSERT INTO storage (productId, quantity) VALUES (' . $productId . ', ' . $options['quantity'] . ')';
+        $storageInsert = $db->prepare($storageSql)->execute();
+
+        /*** Images ***/
+        if (!empty($options['images'])) {
+            $imagesSql = $db->prepare('INSERT INTO images (productId, url) VALUES (?,?)');
+            foreach ($options['images'] as $image) {
+                $imagesSql->execute([$productId, $image['url']]);
+            }
         }
+
+        /*** Tags ***/
+        if (!empty($options['tags'])) {
+            $product_tagSql = $db->prepare('INSERT INTO product_tag (productId, tagId) VALUES (?,?)');
+            foreach ($options['tags'] as $tag) {
+                $product_tagSql->execute([$productId, $tag['id']]);
+            }
+        }
+
+        /*** Category ***/
+        $product_categorySql = 'INSERT INTO product_category (productId, categoryId) VALUES (' . $productId . ', ' . $options['categoryId'] . ')';
+        $product_categoryInsert = $db->prepare($product_categorySql)->execute();
+
+        /*** Features ***/
+        if (!empty($options['features'])) {
+            $product_featureSql = $db->prepare('INSERT INTO product_feature (productId, featureId, value) VALUES (?, ?, ?)');
+            foreach ($options['features'] as $feature) {
+                $product_featureSql->execute([$productId, $feature['id'], $feature['value']]);
+            }
+        }
+
+        if (
+            $productInsert &&
+            $active_productsInsert &&
+            $storageInsert &&
+            $product_categoryInsert
+        ) {
+            return $productId;
+        }
+
         return 0;
-    }*/
+    }
 
     /*public static function update($id, $options)
     {

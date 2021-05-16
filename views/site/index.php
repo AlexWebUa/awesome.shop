@@ -14,10 +14,10 @@
                 <?php if (!empty($product['metatitle'])) :?>
                 <p>Metatitle: <?= $product['metatitle'] ?></p>
                 <?php endif; ?>
-                <p>Slug: <?= $product['slug'] ?></p>
                 <p>Created at: <?= $product['createdAt'] ?></p>
                 <p>Updated at:<?= $product['updatedAt'] ?></p>
                 <p>Discount: <?= $product['discount'] ?>%</p>
+                <?= var_dump($product) ?>
             </div>
         <?php endforeach; ?>
 

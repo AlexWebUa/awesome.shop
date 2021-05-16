@@ -8,10 +8,11 @@ class Router
      */
     private $routes = [
         'product/([0-9]+)' => 'product/view/$1',
-        'cart/add/([0-9]+)' => 'cart/add/$1',
-        'cart/clear' => 'cart/clear',
-        'cart/delete/([0-9]+)' => 'cart/delete/$1',
-        'cart' => 'cart/index',
+        'product/add' => 'product/add',
+//        'cart/add/([0-9]+)' => 'cart/add/$1',
+//        'cart/clear' => 'cart/clear',
+//        'cart/delete/([0-9]+)' => 'cart/delete/$1',
+//        'cart' => 'cart/index',
         'user/register' => 'user/register',
         'user/login' => 'user/login',
         'user/logout' => 'user/logout',

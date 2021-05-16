@@ -17,6 +17,11 @@
         </h1>
     </div>
     <ul class="user-block">
+        <li>
+            <a href="/product/add">
+                Добавить продукт
+            </a>
+        </li>
         <li class="cart">
             <a href="/cart/">
                 Корзина
