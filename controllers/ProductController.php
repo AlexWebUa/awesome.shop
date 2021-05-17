@@ -31,13 +31,21 @@ class ProductController
                 'features' => $_POST['features'] ?? null
             ];
 
-            if (isset($_FILES['mainImg'])) {
+            if (isset($_FILES['mainImg']) && $_FILES['mainImg']['error'] != 4) {
                 $imageName = $_FILES['mainImg']['name'];
                 $imageFileType = pathinfo($imageName, PATHINFO_EXTENSION);
 
                 $options['mainImg'] = $imageName;
             } else {
                 $options['mainImg'] = 'product-photo.png';
+                $imageFileType = 'png';
+            }
+
+            if ($_FILES['images'] != null) {
+                for ($i = 0; $i < count($_FILES['images']['name']); $i++ ) {
+                    $imageName = $_FILES['images']['name'][$i];
+                    $options['images'][] = ['url' => $imageName];
+                }
             }
 
             $errors = false;
@@ -67,6 +75,12 @@ class ProductController
                 if ($id) {
                     if (is_uploaded_file($_FILES["mainImg"]["tmp_name"])) {
                         move_uploaded_file($_FILES["mainImg"]["tmp_name"], $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$imageName}");
+                    }
+
+                    if ($_FILES['images'] != null) {
+                        for ($i = 0; $i < count($_FILES['images']['name']); $i++ ) {
+                            move_uploaded_file($_FILES['images']['tmp_name'][$i], $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$_FILES['images']['name'][$i]}");
+                        }
                     }
                 }
 

@@ -1,7 +1,5 @@
 <?php include_once ROOT . '/views/layouts/header.php'; ?>
 
-<?php  var_dump($_POST);?>
-
 <main>
     <h2>Add product</h2>
 
@@ -22,9 +20,10 @@
                 <label>Metatitle: <input type="text" name="metatitle" placeholder="" value="<?= $_POST['metatitle'] ?? '' ?>"></label>
                 <label>Active: <input type="checkbox" name="isActive" checked value="1"></label>
 
-                <label>Quantity: <input name="quantity" type="number" required value="<?= $_POST['quantity'] ?? '' ?>"></label>
-                <!--TODO: images, tags, features-->
-                <label>Main image: <input type="file" name="mainImg" value=""></label>
+                <label>Quantity: <input name="quantity" type="number" min="0" onkeypress="return event.charCode >= 48" required value="<?= $_POST['quantity'] ?? '' ?>"></label>
+                <!--TODO: tags, features-->
+                <label>Main image: <input type="file" name="mainImg"></label>
+                <label>Additional image(s): <input type="file" name="images[]" multiple></label>
 
                 <!--TODO: category select-->
                 <label>
