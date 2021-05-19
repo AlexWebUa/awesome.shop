@@ -3,6 +3,15 @@
 
 class Category
 {
+    public static function get() {
+        $db = Db::getConnection();
+
+        $result = $db->query('SELECT * FROM category');
+        $result->setFetchMode(PDO::FETCH_ASSOC);
+
+        return $result->fetchAll();
+    }
+
     public static function getById($id)
     {
         $id = intval($id);

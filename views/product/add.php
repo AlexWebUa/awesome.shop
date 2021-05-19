@@ -19,19 +19,24 @@
                 <label>Description: <textarea name="description" cols="30" rows="10" required><?= $_POST['description'] ?? '' ?></textarea></label>
                 <label>Metatitle: <input type="text" name="metatitle" placeholder="" value="<?= $_POST['metatitle'] ?? '' ?>"></label>
                 <label>Active: <input type="checkbox" name="isActive" checked value="1"></label>
-
                 <label>Quantity: <input name="quantity" type="number" min="0" onkeypress="return event.charCode >= 48" required value="<?= $_POST['quantity'] ?? '' ?>"></label>
-                <!--TODO: tags, features-->
+
+                <!--TODO: features-->
+
                 <label>Main image: <input type="file" name="mainImg"></label>
                 <label>Additional image(s): <input type="file" name="images[]" multiple></label>
+                <label>Tags: <input type="text" name="tags"></label>
 
-                <!--TODO: category select-->
                 <label>
                     Category:
                     <select name="categoryId">
-                        <option value="1">Laptop</option>
-                        <option value="2">Gaming laptop</option>
-                        <option value="3" selected>Smartphone</option>
+                        <?php
+                        $categories = Category::get();
+
+                        foreach ($categories as $category) {
+                            echo '<option value="'.$category['id'].'">'.$category['title'].'</option>';
+                        }
+                        ?>
                     </select>
                 </label>
 

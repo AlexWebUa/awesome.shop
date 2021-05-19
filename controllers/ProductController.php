@@ -42,10 +42,36 @@ class ProductController
             }
 
             if ($_FILES['images'] != null) {
-                for ($i = 0; $i < count($_FILES['images']['name']); $i++ ) {
+                for ($i = 0; $i < count($_FILES['images']['name']); $i++) {
                     $imageName = $_FILES['images']['name'][$i];
                     $options['images'][] = ['url' => $imageName];
                 }
+            }
+
+            if ($_POST['tags'] != null) {
+                $tags = explode(' ', $_POST['tags']);
+                $existingTags = Tag::get();
+                $newTags = [];
+
+                foreach ($tags as $tag) {
+                    $isExist = false;
+
+                    foreach ($existingTags as $existingTag) {
+                        if ($tag == $existingTag['title']) {
+                            $isExist = true;
+                        }
+                    }
+
+                    if (!$isExist) {
+                        $newTags[] = $tag;
+                    }
+                }
+
+                Tag::add($newTags);
+
+                $tagIds = Tag::getByTitlesArray($tags);
+
+                $options['tags'] = $tagIds;
             }
 
             $errors = false;
@@ -66,11 +92,10 @@ class ProductController
                 $errors[] = 'Размер файла не должен превышать 5Мб.';
             }
 
+            //$errors = true;
             if ($errors == false) {
 
                 $id = Product::add($options);
-
-                var_dump($id);
 
                 if ($id) {
                     if (is_uploaded_file($_FILES["mainImg"]["tmp_name"])) {
@@ -78,7 +103,7 @@ class ProductController
                     }
 
                     if ($_FILES['images'] != null) {
-                        for ($i = 0; $i < count($_FILES['images']['name']); $i++ ) {
+                        for ($i = 0; $i < count($_FILES['images']['name']); $i++) {
                             move_uploaded_file($_FILES['images']['tmp_name'][$i], $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$_FILES['images']['name'][$i]}");
                         }
                     }
@@ -89,6 +114,57 @@ class ProductController
         }
 
         require_once(ROOT . '/views/product/add.php');
+        return true;
+    }
+
+    public function actionAddFeatures($productId)
+    {
+        $product = Product::getById($productId);
+        $categoryFeatures = Feature::getByCategoryId($product['category']['id']);
+        $newFeatures = [];
+        $existingFeatures = [];
+
+        foreach ($categoryFeatures as &$categoryFeature) {
+            $categoryFeature['value'] = Feature::getValueByProductId(intval($categoryFeature['id']), intval($productId));
+        }
+
+        if (isset($_POST['submit'])) {
+            $postedData = $_POST;
+
+            foreach ($postedData as $key => $value) {
+                if ($key != 'submit') {
+                    $exists = false;
+
+                    foreach ($categoryFeatures as $categoryFeature) {
+                        if (in_array($key, $categoryFeature) && $categoryFeature['value'] != null) $exists = true;
+                    }
+                    if ($exists) {
+                        $existingFeatures[] = ['featureId' => $key, 'value' => $value];
+                    } else {
+                        $newFeatures[] = ['featureId' => $key, 'value' => $value];
+                    }
+                }
+            }
+
+            var_dump($existingFeatures, $newFeatures);
+
+            if (!empty($existingFeatures)) Product::updateFeatures($productId, $existingFeatures);
+            if (!empty($newFeatures)) Product::addFeatures($productId, $newFeatures);
+
+            header("Location: /product/" . $productId);
+        }
+
+
+        require_once(ROOT . '/views/product/addFeatures.php');
+        return true;
+    }
+
+    public function actionDelete($productId)
+    {
+        $result = Product::delete($productId);
+
+        require_once(ROOT . '/views/product/delete.php');
+
         return true;
     }
 

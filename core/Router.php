@@ -9,6 +9,8 @@ class Router
     private $routes = [
         'product/([0-9]+)' => 'product/view/$1',
         'product/add' => 'product/add',
+        'product/delete/([0-9]+)' => 'product/delete/$1',
+        'product/features/([0-9]+)' => 'product/addFeatures/$1',
 //        'cart/add/([0-9]+)' => 'cart/add/$1',
 //        'cart/clear' => 'cart/clear',
 //        'cart/delete/([0-9]+)' => 'cart/delete/$1',

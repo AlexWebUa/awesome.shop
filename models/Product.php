@@ -108,7 +108,7 @@ class Product
     /**
      * Add product in db
      * @param $options
-     * @return int|string
+     * @return int
      */
     public static function add($options)
     {
@@ -153,14 +153,6 @@ class Product
         $product_categorySql = 'INSERT INTO product_category (productId, categoryId) VALUES (' . $productId . ', ' . $options['categoryId'] . ')';
         $product_categoryInsert = $db->prepare($product_categorySql)->execute();
 
-        /*** Features ***/
-        if (!empty($options['features'])) {
-            $product_featureSql = $db->prepare('INSERT INTO product_feature (productId, featureId, value) VALUES (?, ?, ?)');
-            foreach ($options['features'] as $feature) {
-                $product_featureSql->execute([$productId, $feature['id'], $feature['value']]);
-            }
-        }
-
         if (
             $productInsert &&
             $active_productsInsert &&
@@ -173,19 +165,43 @@ class Product
         return 0;
     }
 
+    public static function addFeatures($id, $features) {
+        $db = Db::getConnection();
+
+        $sql = $db->prepare('INSERT INTO product_feature (productId, featureId, value) VALUES ('.$id.', :featureId, :value)');
+
+        foreach ($features as $feature) {
+            $sql->bindParam(':featureId', $feature['featureId']);
+            $sql->bindParam(':value', $feature['value']);
+            $sql->execute();
+        }
+    }
+
+    public static function updateFeatures($id, $features) {
+        $db = Db::getConnection();
+
+        $sql = $db->prepare('UPDATE product_feature SET value = :value WHERE productId = '.$id.' AND featureId = :featureId');
+
+        foreach ($features as $feature) {
+            $sql->bindParam(':featureId', $feature['featureId']);
+            $sql->bindParam(':value', $feature['value']);
+            $sql->execute();
+        }
+    }
+
     /*public static function update($id, $options)
     {
         $db = Db::getConnection();
 
         $sql = "UPDATE products
-            SET 
-                name = :name, 
-                code = :code, 
-                price = :price,  
-                brand = :brand, 
-                image = :image, 
+            SET
+                name = :name,
+                code = :code,
+                price = :price,
+                brand = :brand,
+                image = :image,
                 description = :description,
-                is_new = :is_new, 
+                is_new = :is_new,
                 is_available = :is_available
             WHERE id = :id";
 
@@ -202,15 +218,44 @@ class Product
         return $result->execute();
     }*/
 
-    /*public static function delete($id)
+    /**
+     * Delete product from db
+     * @param $id
+     * @return array
+     */
+    public static function delete($id)
     {
         $db = Db::getConnection();
 
-        $sql = 'DELETE FROM products WHERE id = :id';
+        /*** Active products ***/
+        $sql = 'DELETE FROM active_products WHERE productId = '.$id;
+        $result[] = $db->prepare($sql)->execute();
 
-        $result = $db->prepare($sql);
-        $result->bindParam(':id', $id, PDO::PARAM_INT);
-        return $result->execute();
-    }*/
+        /*** Storage ***/
+        $sql = 'DELETE FROM storage WHERE productId = '.$id;
+        $result[] = $db->prepare($sql)->execute();
+
+        /*** Images ***/
+        $sql = 'DELETE FROM images WHERE productId = '.$id;
+        $result[] = $db->prepare($sql)->execute();
+
+        /*** Product category ***/
+        $sql = 'DELETE FROM product_category WHERE productId = '.$id;
+        $result[] = $db->prepare($sql)->execute();
+
+        /*** Product feature ***/
+        $sql = 'DELETE FROM product_feature WHERE productId = '.$id;
+        $result[] = $db->prepare($sql)->execute();
+
+        /*** Product tag ***/
+        $sql = 'DELETE FROM product_tag WHERE productId = '.$id;
+        $result[] = $db->prepare($sql)->execute();
+
+        /*** Product ***/
+        $sql = 'DELETE FROM product WHERE id = '.$id;
+        $result[] = $db->prepare($sql)->execute();
+
+        return $result;
+    }
 
 }
