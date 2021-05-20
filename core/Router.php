@@ -22,7 +22,7 @@ class Router
         'cabinet/update/([0-9]+)' => 'cabinet/update/$1',
         'cabinet/delete/([0-9]+)' => 'cabinet/delete/$1',
         'cabinet' => 'cabinet/index',
-        '' => 'site/index',
+        '' => 'site/index/$1',
     ];
 
     /**

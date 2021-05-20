@@ -11,18 +11,22 @@ class Product
      * @param int $count
      * @return array
      */
-    public static function getLatest(int $count = self::SHOW_BY_DEFAULT)
+    public static function getLatest(int $offset = 0, int $count = self::SHOW_BY_DEFAULT)
     {
         $count = intval($count);
         $db = Db::getConnection();
 
-        $result = $db->query('SELECT product.*, discount.discount, discount.startDate, discount.finishDate, discount.completedBeforeDeadline, active_products.isActive '
+        $result = $db->query('SELECT product.id, product.title, product.description, product.mainImg, discount.discount, active_products.isActive '
             . 'FROM product '
             . 'LEFT JOIN active_products ON product.id = active_products.productId '
-            . 'LEFT JOIN discount ON product.id = discount.productId '
+            . 'LEFT JOIN discount '
+                . 'ON product.id = discount.productId '
+                . 'AND discount.completedBeforeDeadline = "0" '
+                . 'AND CURRENT_TIMESTAMP > startDate '
+                . 'AND CURRENT_TIMESTAMP < finishDate '
             . 'ORDER BY id DESC '
-            . 'LIMIT ' . $count);
-        //TODO: recent discounts
+            . 'LIMIT ' . $count . ' '
+            . 'OFFSET ' . $offset );
 
         $result->setFetchMode(PDO::FETCH_ASSOC);
 
@@ -102,6 +106,14 @@ class Product
         }
 
         return false;
+    }
+
+    public static function getTotalNumber() {
+        $db = Db::getConnection();
+
+        $totalNumber = $db->query('SELECT COUNT(*) FROM product');
+
+        return $totalNumber->fetchColumn();
     }
 
 

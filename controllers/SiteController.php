@@ -3,9 +3,11 @@
 class SiteController
 {
 
-    public function actionIndex()
+    public function actionIndex($offset)
     {
-        $latestProducts = Product::getLatest();
+        $offset = $_GET['offset'] ?? 0;
+        $latestProducts = Product::getLatest($offset);
+        $totalNumber = Product::getTotalNumber();
 
         require_once(ROOT . '/views/site/index.php');
 
