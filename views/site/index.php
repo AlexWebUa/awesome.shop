@@ -11,7 +11,6 @@
                     <a href="<?= '/product/' . $product['id'] ?>" class="product-name"><?= $product['title']; ?></a>
                 </h3>
                 <p>Description: <?= $product['description'] ?></p>
-                <p>Discount: <?= $product['discount'] ?>%</p>
                 <p>IsActive: <?= $product['isActive'] ?></p>
                 <?php if ($product['discount'] != null) : ?>
                     <p>Discount: <?= $product['discount'] ?>%</p>

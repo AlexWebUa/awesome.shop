@@ -19,6 +19,8 @@ class ProductController
     public function actionAdd()
     {
         if (isset($_POST['submit'])) {
+            $errors = false;
+
             $options = [
                 'title' => $_POST['title'],
                 'description' => $_POST['description'],
@@ -28,7 +30,10 @@ class ProductController
                 'images' => $_POST['images'] ?? null,
                 'tags' => $_POST['tags'] ?? null,
                 'categoryId' => $_POST['categoryId'],
-                'features' => $_POST['features'] ?? null
+                'features' => $_POST['features'] ?? null,
+                'discount' => $_POST['discount'] ?? null,
+                'startDate' => $_POST['startDate'] ?? null,
+                'finishDate' => $_POST['finishDate'] ?? null
             ];
 
             if (isset($_FILES['mainImg']) && $_FILES['mainImg']['error'] != 4) {
@@ -74,12 +79,19 @@ class ProductController
                 $options['tags'] = $tagIds;
             }
 
-            $errors = false;
+            if ($_POST['discount'] != null && $_POST['startDate'] != null && $_POST['finishDate'] != null) {
+                if ($_POST['startDate'] > $_POST['finishDate']) {
+                    $errors[] = 'Начало должно быть раньше конца';
+                } else {
+                    $options['startDate'] = date("Y-m-d H:i:s",strtotime($_POST['startDate']));
+                    $options['finishDate'] = date("Y-m-d H:i:s",strtotime($_POST['finishDate']));
+                }
+            }
+
             if (
                 !isset($options['title']) || empty($options['title']) ||
                 !isset($options['description']) || empty($options['description']) ||
-                !isset($options['quantity']) || empty($options['quantity']) ||
-                !isset($options['categoryId']) || empty($options['categoryId'])
+                !isset($options['quantity']) || empty($options['quantity'])
             ) {
                 $errors[] = 'Заполните все поля';
             }
@@ -92,7 +104,6 @@ class ProductController
                 $errors[] = 'Размер файла не должен превышать 5Мб.';
             }
 
-            //$errors = true;
             if ($errors == false) {
 
                 $id = Product::add($options);

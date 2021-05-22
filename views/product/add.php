@@ -15,14 +15,11 @@
         <div>
             <form action="#" method="post" enctype="multipart/form-data">
 
-                <label>Title: <input type="text" name="title" placeholder="" value="<?= $_POST['title'] ?? '' ?>" required></label>
-                <label>Description: <textarea name="description" cols="30" rows="10" required><?= $_POST['description'] ?? '' ?></textarea></label>
+                <label>Title*: <input type="text" name="title" placeholder="" value="<?= $_POST['title'] ?? '' ?>" required></label>
+                <label>Description*: <textarea name="description" cols="30" rows="10" required><?= $_POST['description'] ?? '' ?></textarea></label>
                 <label>Metatitle: <input type="text" name="metatitle" placeholder="" value="<?= $_POST['metatitle'] ?? '' ?>"></label>
                 <label>Active: <input type="checkbox" name="isActive" checked value="1"></label>
-                <label>Quantity: <input name="quantity" type="number" min="0" onkeypress="return event.charCode >= 48" required value="<?= $_POST['quantity'] ?? '' ?>"></label>
-
-                <!--TODO: features-->
-
+                <label>Quantity*: <input type="number" name="quantity" min="0" onkeypress="return event.charCode >= 48" required value="<?= $_POST['quantity'] ?? '' ?>"></label>
                 <label>Main image: <input type="file" name="mainImg"></label>
                 <label>Additional image(s): <input type="file" name="images[]" multiple></label>
                 <label>Tags: <input type="text" name="tags"></label>
@@ -39,6 +36,14 @@
                         ?>
                     </select>
                 </label>
+
+                <br>
+                DISCOUNT:
+
+                <label>Discount size: <input type="number" name="discount" min="0" max="100" onkeypress="return event.charCode >= 48"></label>
+                <label>Start date: <input type="date" name="startDate"></label>
+                <label>Finish date: <input type="date" name="finishDate"></label>
+
 
                 <input type="submit" name="submit" value="Submit">
 

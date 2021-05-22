@@ -165,11 +165,22 @@ class Product
         $product_categorySql = 'INSERT INTO product_category (productId, categoryId) VALUES (' . $productId . ', ' . $options['categoryId'] . ')';
         $product_categoryInsert = $db->prepare($product_categorySql)->execute();
 
+        /*** Discount ***/
+        if (!empty($options['discount'])) {
+            $discountSql = 'INSERT INTO discount (productId, discount, startDate, finishDate) VALUES (' . $productId . ', :discount, :startDate, :finishDate)';
+            $discountInsert = $db->prepare($discountSql);
+            $discountInsert->bindParam(':discount', $options['discount']);
+            $discountInsert->bindParam(':startDate', $options['startDate']);
+            $discountInsert->bindParam(':finishDate', $options['finishDate']);
+            $discountInsert->execute();
+        }
+
         if (
             $productInsert &&
             $active_productsInsert &&
             $storageInsert &&
-            $product_categoryInsert
+            $product_categoryInsert &&
+            $discountInsert
         ) {
             return $productId;
         }
