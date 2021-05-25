@@ -212,6 +212,77 @@ class Product
         }
     }
 
+    public static function update($id, $options)
+    {
+        $db = Db::getConnection();
+
+        /*** Product ***/
+        $productData = [
+            'id' => $id,
+            'title' => $options['title'],
+            'description' => $options['description'],
+            'metatitle' => $options['metatitle'],
+            'mainImg' => $options['mainImg'],
+        ];
+        $productSql = 'UPDATE product SET '
+            . 'title = :title, '
+            . 'description = :description, '
+            . 'metatitle = :metatitle, '
+            . 'mainImg = :mainImg '
+            . 'WHERE id = :id'
+            ;
+        $productInsert = $db->prepare($productSql)->execute($productData);
+
+        /*** Active products ***/
+        $active_productsSql = 'UPDATE active_products SET isActive = '. $options['isActive'] .' WHERE productId = ' .$id;
+        $active_productsInsert = $db->prepare($active_productsSql)->execute();
+
+        /*** Storage ***/
+        $storageSql = 'UPDATE storage SET quantity = '.$options['quantity'] .' WHERE productId = '. $id;
+        $storageInsert = $db->prepare($storageSql)->execute();
+
+        /*** Images ***/
+        /*if (!empty($options['images'])) {
+            $imagesSql = $db->prepare('INSERT INTO images (productId, url) VALUES (?,?)');
+            foreach ($options['images'] as $image) {
+                $imagesSql->execute([$productId, $image['url']]);
+            }
+        }*/
+
+        /*** Tags ***/
+        /*if (!empty($options['tags'])) {
+            $product_tagSql = $db->prepare('INSERT INTO product_tag (productId, tagId) VALUES (?,?)');
+            foreach ($options['tags'] as $tag) {
+                $product_tagSql->execute([$productId, $tag['id']]);
+            }
+        }*/
+
+        /*** Category ***/
+        $product_categorySql = 'UPDATE product_category SET categoryId = '. $options['categoryId'] .' WHERE productId = '. $id;
+        $product_categoryInsert = $db->prepare($product_categorySql)->execute();
+
+        /*** Discount ***/
+        /*if (!empty($options['discount'])) {
+            $discountSql = 'INSERT INTO discount (productId, discount, startDate, finishDate) VALUES (' . $productId . ', :discount, :startDate, :finishDate)';
+            $discountInsert = $db->prepare($discountSql);
+            $discountInsert->bindParam(':discount', $options['discount']);
+            $discountInsert->bindParam(':startDate', $options['startDate']);
+            $discountInsert->bindParam(':finishDate', $options['finishDate']);
+            $discountInsert->execute();
+        }*/
+
+        if (
+            $productInsert &&
+            $active_productsInsert &&
+            $storageInsert &&
+            $product_categoryInsert
+        ) {
+            return 1;
+        }
+
+        return 0;
+    }
+
     /*public static function update($id, $options)
     {
         $db = Db::getConnection();

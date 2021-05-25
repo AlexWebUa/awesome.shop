@@ -110,12 +110,16 @@ class ProductController
 
                 if ($id) {
                     if (is_uploaded_file($_FILES["mainImg"]["tmp_name"])) {
-                        move_uploaded_file($_FILES["mainImg"]["tmp_name"], $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$imageName}");
+                        $fullPath = $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$imageName}";
+                        if (!file_exists($fullPath))
+                            move_uploaded_file($_FILES["mainImg"]["tmp_name"], $fullPath);
                     }
 
                     if ($_FILES['images'] != null) {
                         for ($i = 0; $i < count($_FILES['images']['name']); $i++) {
-                            move_uploaded_file($_FILES['images']['tmp_name'][$i], $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$_FILES['images']['name'][$i]}");
+                            $fullPath = $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$_FILES['images']['name'][$i]}";
+                            if (!file_exists($fullPath))
+                                move_uploaded_file($_FILES['images']['tmp_name'][$i], $fullPath);
                         }
                     }
                 }
@@ -167,6 +171,100 @@ class ProductController
 
 
         require_once(ROOT . '/views/product/addFeatures.php');
+        return true;
+    }
+
+    public function actionEdit($productId) {
+        $product = Product::getById($productId);
+
+        if (isset($_POST['submit'])) {
+            $errors = false;
+
+            $options = [
+                'title' => $_POST['title'],
+                'description' => $_POST['description'],
+                'metatitle' => $_POST['metatitle'] ?? '',
+                'isActive' => $_POST['isActive'] ?? '0',
+                'quantity' => $_POST['quantity'],
+                'tags' => $_POST['tags'] ?? null,
+                'categoryId' => $_POST['categoryId']
+            ];
+
+            if (isset($_FILES['mainImg']) && $_FILES['mainImg']['error'] != 4) {
+                $imageName = $_FILES['mainImg']['name'];
+                $imageFileType = pathinfo($imageName, PATHINFO_EXTENSION);
+
+                $options['mainImg'] = $imageName;
+            } else {
+                $options['mainImg'] = 'product-photo.png';
+            }
+
+            /*if (isset($_FILES['images']) && $_FILES['images']['error'][0] != 4) {
+                for ($i = 0; $i < count($_FILES['images']['name']); $i++) {
+                    $imageName = $_FILES['images']['name'][$i];
+                    $options['images'][] = ['url' => $imageName];
+                }
+            }*/
+
+            /*if ($_POST['tags'] != null) {
+                $tags = explode(' ', $_POST['tags']);
+                $existingTags = Tag::get();
+                $newTags = [];
+
+                foreach ($tags as $tag) {
+                    $isExist = false;
+
+                    foreach ($existingTags as $existingTag) {
+                        if ($tag == $existingTag['title']) {
+                            $isExist = true;
+                        }
+                    }
+
+                    if (!$isExist) {
+                        $newTags[] = $tag;
+                    }
+                }
+
+                Tag::add($newTags);
+
+                $tagIds = Tag::getByTitlesArray($tags);
+
+                $options['tags'] = $tagIds;
+            }*/
+
+            /*if ($_POST['discount'] != null && $_POST['startDate'] != null && $_POST['finishDate'] != null) {
+                if ($_POST['startDate'] > $_POST['finishDate']) {
+                    $errors[] = 'Начало должно быть раньше конца';
+                } else {
+                    $options['discount'] = $_POST['discount'];
+                    $options['startDate'] = date("Y-m-d H:i:s",strtotime($_POST['startDate']));
+                    $options['finishDate'] = date("Y-m-d H:i:s",strtotime($_POST['finishDate']));
+                }
+            }*/
+
+            if ($errors == false) {
+                $success = Product::update($productId, $options);
+
+                if (is_uploaded_file($_FILES["mainImg"]["tmp_name"])) {
+                    $fullPath = $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$imageName}";
+                    if (!file_exists($fullPath))
+                        move_uploaded_file($_FILES["mainImg"]["tmp_name"], $fullPath);
+                }
+
+                /*if ($_FILES['images'] != null) {
+                    for ($i = 0; $i < count($_FILES['images']['name']); $i++) {
+                        $fullPath = $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$_FILES['images']['name'][$i]}";
+                        if (!file_exists($fullPath))
+                            move_uploaded_file($_FILES['images']['tmp_name'][$i], $fullPath);
+                    }
+                }*/
+
+                if ($success) header("Location: /product/" . $productId);
+            }
+        }
+
+
+        require_once(ROOT . '/views/product/edit.php');
         return true;
     }
 
