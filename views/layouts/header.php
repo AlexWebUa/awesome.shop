@@ -17,11 +17,6 @@
         </h1>
     </div>
     <ul class="user-block">
-        <li>
-            <a href="/product/add">
-                Добавить продукт
-            </a>
-        </li>
         <li class="cart">
             <a href="/cart/">
                 Корзина
@@ -36,6 +31,9 @@
                 <a href="/user/register/">Регистрация</a>
             </li>
         <?php else: ?>
+            <li>
+                <a href="/product/add">Добавить продукт</a>
+            </li>
             <li class="cabinet">
                 <a href="/cabinet/">Кабинет</a>
             </li>

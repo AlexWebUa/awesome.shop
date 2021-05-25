@@ -10,22 +10,25 @@ class UserController
      */
     public function actionRegister()
     {
-        $name = '';
-        $email = '';
-        $password = '';
         $result = false;
 
         if (isset($_POST['submit'])) {
-            $name = $_POST['name'];
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+            $options = [
+                'firstName' => $_POST['firstName'],
+                'lastName' => $_POST['lastName'],
+                'email' => $_POST['email'],
+                'passwordHash' => md5($_POST['password'])
+            ];
 
-            $errors = $this->checkData($name, $email, $password);
+            $errors = $this->checkData($options['email'], $_POST['password']);
 
             if ($errors == false) {
-                $result = User::register($name, $email, $password);
-            }
+                $result = User::register($options);
 
+                if ($result) {
+                    User::auth($result);
+                }
+            }
         }
 
         require_once(ROOT . '/views/user/register.php');
@@ -40,13 +43,9 @@ class UserController
      * @param $password
      * @return array|bool
      */
-    private function checkData($name, $email, $password)
+    private function checkData($email, $password)
     {
         $errors = false;
-
-        if (!User::checkName($name)) {
-            $errors[] = 'Имя не должно быть короче 4-х символов';
-        }
 
         if (!User::checkEmail($email)) {
             $errors[] = 'Неправильный email';
@@ -73,9 +72,10 @@ class UserController
         $password = '';
 
         if (isset($_POST['submit'])) {
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-
+            $options = [
+                'email' => $_POST['email'],
+                'passwordHash' => md5($_POST['password'])
+            ];
             $errors = false;
 
             if (!User::checkEmail($email)) {
@@ -85,7 +85,7 @@ class UserController
                 $errors[] = 'Пароль не может быть короче 6-ти символов';
             }
 
-            $userId = User::checkUserData($email, $password);
+            $userId = User::checkUserData($options);
 
             if ($userId == false) {
                 $errors[] = 'Пользователь не найден!';
@@ -107,7 +107,8 @@ class UserController
      */
     public function actionLogout()
     {
-        unset($_SESSION["user"]);
+        unset($_SESSION["userId"]);
+        unset($_SESSION["userRole"]);
         header("Location: /");
     }
 

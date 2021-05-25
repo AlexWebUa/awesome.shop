@@ -10,33 +10,22 @@ class User
      * @param $password
      * @return bool
      */
-    public static function register($name, $email, $password)
+    public static function register($options)
     {
 
         $db = Db::getConnection();
+        $userId = intval($db->query('SELECT MAX(id) FROM user')->fetchColumn()) + 1;
 
-        $sql = 'INSERT INTO users (name, email, password) '
-            . 'VALUES (:name, :email, :password)';
-
+        $data = [
+            'firstName' => $options['firstName'],
+            'lastName' => $options['lastName'],
+            'email' => $options['email'],
+            'passwordHash' => $options['passwordHash']
+        ];
+        $sql = 'INSERT INTO user (firstName, lastName, email, passwordHash, roleId) '
+            . 'VALUES (:firstName, :lastName, :email, :passwordHash, 1)';
         $result = $db->prepare($sql);
-        $result->bindParam(':name', $name, PDO::PARAM_STR);
-        $result->bindParam(':email', $email, PDO::PARAM_STR);
-        $result->bindParam(':password', $password, PDO::PARAM_STR);
-
-        return $result->execute();
-    }
-
-    /**
-     * Check if name has >4 chars
-     * @param $name
-     * @return bool
-     */
-    public static function checkName($name)
-    {
-        if (strlen($name) >= 4) {
-            return true;
-        }
-        return false;
+        return $result->execute($data) ? $userId : false;
     }
 
     /**
@@ -75,10 +64,9 @@ class User
 
         $db = Db::getConnection();
 
-        $sql = 'SELECT COUNT(*) FROM users WHERE email = :email';
+        $sql = 'SELECT COUNT(*) FROM user WHERE email = "'. $email .'"';
 
         $result = $db->prepare($sql);
-        $result->bindParam(':email', $email, PDO::PARAM_STR);
         $result->execute();
 
         if ($result->fetchColumn())
@@ -92,17 +80,14 @@ class User
      * @param $password
      * @return bool
      */
-    public static function checkUserData($email, $password)
+    public static function checkUserData($options)
     {
         $db = Db::getConnection();
 
-        $sql = 'SELECT * FROM users WHERE email = :email AND password = :password';
+        $sql = 'SELECT * FROM user WHERE email = :email AND passwordHash = :passwordHash';
 
         $result = $db->prepare($sql);
-        $result->bindParam(':email', $email, PDO::PARAM_STR);
-        $result->bindParam(':password', $password, PDO::PARAM_STR);
-        $result->execute();
-
+        $result->execute($options);
         $user = $result->fetch();
         if ($user) {
             return $user['id'];
@@ -117,7 +102,8 @@ class User
      */
     public static function auth($userId)
     {
-        $_SESSION['user'] = $userId;
+        $_SESSION['userId'] = $userId;
+        $_SESSION['userRole'] = self::getRole($userId);
     }
 
     /**
@@ -126,8 +112,8 @@ class User
      */
     public static function checkLogged()
     {
-        if (isset($_SESSION['user'])) {
-            return $_SESSION['user'];
+        if (isset($_SESSION['userId'])) {
+            return $_SESSION['userId'];
         }
 
         header("Location: /user/login");
@@ -135,28 +121,27 @@ class User
         return true;
     }
 
+    public static function getRole($id) {
+        $db = Db::getConnection();
+        $sql = $db->query('SELECT roleId FROM user WHERE id = '. $id);
+        return $sql->fetchColumn();
+    }
+
     /**
      * Returns user by id
      * @param $id
      * @return mixed
      */
-    public static function getUserById($id)
+    public static function get($id)
     {
-        if ($id) {
-            $db = Db::getConnection();
-            $sql = 'SELECT * FROM users WHERE id = :id';
+        $db = Db::getConnection();
+        $sql = 'SELECT * FROM user WHERE id = :id';
+        $result = $db->prepare($sql);
+        $result->bindParam(':id', $id, PDO::PARAM_INT);
+        $result->setFetchMode(PDO::FETCH_ASSOC);
+        $result->execute();
 
-            $result = $db->prepare($sql);
-            $result->bindParam(':id', $id, PDO::PARAM_INT);
-
-            $result->setFetchMode(PDO::FETCH_ASSOC);
-            $result->execute();
-
-
-            return $result->fetch();
-        }
-
-        return false;
+        return $result->fetch();
     }
 
     /**
@@ -165,7 +150,7 @@ class User
      */
     public static function isGuest()
     {
-        if (isset($_SESSION['user'])) {
+        if (isset($_SESSION['userId'])) {
             return false;
         }
         return true;
