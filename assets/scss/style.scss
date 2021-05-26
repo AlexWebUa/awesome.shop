@@ -19,10 +19,20 @@ body {
     flex-direction: column;
 }
 
+h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
 a {
     color: inherit;
     text-decoration: none;
     transition: .3s color;
+}
+
+.text-error {
+    color: red;
+    font-size: 12px;
 }
 
 .header {
@@ -77,8 +87,13 @@ a {
     .product {
         margin-bottom: 35px;
 
-        &+.product {
-            //margin-left: 20px;
+        &.disabled {
+            filter: grayscale(1);
+            cursor: default;
+
+            &:hover {
+                background-color: unset;
+            }
         }
     }
 }
@@ -243,7 +258,7 @@ a {
 
     .features {
         padding-left: 20px;
-        
+
         .feature {
             display: list-item;
             list-style: disc inside;
@@ -272,11 +287,12 @@ a {
 .btn-block {
     display: block;
     width: 100%;
+    box-sizing: border-box;
     text-align: center;
     color: #000;
-    font-size: 20px;
+    font-size: 18px;
     border-radius: 5px;
-    padding: 15px;
+    padding: 7px 15px;
     background-color: transparent;
     border: 1px solid $colorGreen;
     transition: .3s all;
@@ -302,7 +318,7 @@ form {
     flex-direction: column;
     max-width: 600px;
     margin: auto;
-    
+
     label {
         display: flex;
         flex-direction: row;
@@ -313,7 +329,13 @@ form {
             align-items: flex-start;
         }
 
-        select, input[type='date'], input[type='text'], input[type='number'], textarea {
+        select,
+        input[type='date'],
+        input[type='text'],
+        input[type='number'],
+        input[type='email'],
+        input[type='password'],
+        textarea {
             border: 2px solid #eee;
             border-radius: 5px;
             background: #eee;

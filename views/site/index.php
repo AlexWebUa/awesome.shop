@@ -3,7 +3,8 @@
 <div class="container">
     <section class="products">
         <?php foreach ($latestProducts as $product): ?>
-            <div class="product<?php if($product['discount'] != null) echo ' discount'; if (!$product['isActive']) echo ' disabled'; ?>">
+            <div class="product<?php if ($product['discount'] != null) echo ' discount';
+            if (!$product['isActive']) echo ' disabled'; ?>">
                 <a href="<?= '/product/' . $product['id'] ?>">
                     <img src="/uploads/images/<?= $product['mainImg'] ?>" alt="" class="product__img">
                 </a>
@@ -17,7 +18,7 @@
                 <div class="price">
                     <?php if ($product['discount'] != null) : ?>
                         <span class="price__old">&#8372;&nbsp;<?= $product['price'] ?></span>
-                        <span class="price__new">&#8372;&nbsp;<?= $product['price'] - (intval($product['price']) *  intval($product['discount']) / 100)?></span>
+                        <span class="price__new">&#8372;&nbsp;<?= $product['price'] - (intval($product['price']) * intval($product['discount']) / 100) ?></span>
                     <?php else : ?>
                         <span class="price__regular">&#8372;&nbsp;<?= $product['price'] ?></span>
                     <?php endif; ?>
@@ -28,11 +29,11 @@
     </section>
 
     <?php
-        if ($totalNumber > 10):
-    ?>
+    if ($totalNumber > 10):
+        ?>
         <div class="pagination">
-            <?php for ($i = 0; $i < ceil($totalNumber/10); $i++) : ?>
-                <a href="/?offset=<?=$i*8?>"><?=$i+1?></a>
+            <?php for ($i = 0; $i < ceil($totalNumber / 10); $i++) : ?>
+                <a href="/?offset=<?= $i * 8 ?>"><?= $i + 1 ?></a>
             <?php endfor; ?>
         </div>
     <?php endif ?>

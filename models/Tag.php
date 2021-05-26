@@ -30,10 +30,11 @@ class Tag
         return $result;
     }
 
-    public static function getByTitlesArray($titles) {
+    public static function getByTitlesArray($titles)
+    {
         $db = Db::getConnection();
 
-        $sql = 'SELECT id FROM tag WHERE title IN (\''. implode("', '", $titles) .'\')';
+        $sql = 'SELECT id FROM tag WHERE title IN (\'' . implode("', '", $titles) . '\')';
         $result = $db->query($sql);
 
         return $result->fetchAll(PDO::FETCH_ASSOC);

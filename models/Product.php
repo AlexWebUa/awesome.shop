@@ -6,11 +6,6 @@ class Product
 
     const SHOW_BY_DEFAULT = 8;
 
-    /**
-     * Returns an array of latest products
-     * @param int $count
-     * @return array
-     */
     public static function getLatest(int $offset = 0, int $count = self::SHOW_BY_DEFAULT)
     {
         $count = intval($count);
@@ -20,25 +15,20 @@ class Product
             . 'FROM product '
             . 'LEFT JOIN active_products ON product.id = active_products.productId '
             . 'LEFT JOIN discount '
-                . 'ON product.id = discount.productId '
-                . 'AND discount.completedBeforeDeadline = "0" '
-                . 'AND CURRENT_TIMESTAMP > startDate '
-                . 'AND CURRENT_TIMESTAMP < finishDate '
+            . 'ON product.id = discount.productId '
+            . 'AND discount.completedBeforeDeadline = "0" '
+            . 'AND CURRENT_TIMESTAMP > startDate '
+            . 'AND CURRENT_TIMESTAMP < finishDate '
             . 'LEFT JOIN product_price ON product.id = product_price.productId '
             . 'ORDER BY id DESC '
             . 'LIMIT ' . $count . ' '
-            . 'OFFSET ' . $offset );
+            . 'OFFSET ' . $offset);
 
         $result->setFetchMode(PDO::FETCH_ASSOC);
 
         return $result->fetchAll();
     }
 
-    /**
-     * Returns product item by id
-     * @param integer $id
-     * @return mixed
-     */
     public static function getById(int $id)
     {
         $id = intval($id);
@@ -70,7 +60,7 @@ class Product
 
             /*** Features ***/
             $features = $db->query(
-                'SELECT feature.title, product_feature.value '
+                'SELECT feature.*, product_feature.value '
                 . 'FROM product_feature '
                 . 'LEFT JOIN feature ON product_feature.productId = ' . $id
                 . ' WHERE feature.id = product_feature.featureId'
@@ -110,7 +100,8 @@ class Product
         return false;
     }
 
-    public static function getTotalNumber() {
+    public static function getTotalNumber()
+    {
         $db = Db::getConnection();
 
         $totalNumber = $db->query('SELECT COUNT(*) FROM product');
@@ -118,12 +109,6 @@ class Product
         return $totalNumber->fetchColumn();
     }
 
-
-    /**
-     * Add product in db
-     * @param $options
-     * @return int
-     */
     public static function add($options)
     {
         $db = Db::getConnection();
@@ -195,10 +180,11 @@ class Product
         return 0;
     }
 
-    public static function addFeatures($id, $features) {
+    public static function addFeatures($id, $features)
+    {
         $db = Db::getConnection();
 
-        $sql = $db->prepare('INSERT INTO product_feature (productId, featureId, value) VALUES ('.$id.', :featureId, :value)');
+        $sql = $db->prepare('INSERT INTO product_feature (productId, featureId, value) VALUES (' . $id . ', :featureId, :value)');
 
         foreach ($features as $feature) {
             $sql->bindParam(':featureId', $feature['featureId']);
@@ -207,10 +193,11 @@ class Product
         }
     }
 
-    public static function updateFeatures($id, $features) {
+    public static function updateFeatures($id, $features)
+    {
         $db = Db::getConnection();
 
-        $sql = $db->prepare('UPDATE product_feature SET value = :value WHERE productId = '.$id.' AND featureId = :featureId');
+        $sql = $db->prepare('UPDATE product_feature SET value = :value WHERE productId = ' . $id . ' AND featureId = :featureId');
 
         foreach ($features as $feature) {
             $sql->bindParam(':featureId', $feature['featureId']);
@@ -236,21 +223,20 @@ class Product
             . 'description = :description, '
             . 'metatitle = :metatitle, '
             . 'mainImg = :mainImg '
-            . 'WHERE id = :id'
-            ;
+            . 'WHERE id = :id';
         $productInsert = $db->prepare($productSql)->execute($productData);
 
         /*** Active products ***/
-        $active_productsSql = 'UPDATE active_products SET isActive = '. $options['isActive'] .' WHERE productId = ' .$id;
+        $active_productsSql = 'UPDATE active_products SET isActive = ' . $options['isActive'] . ' WHERE productId = ' . $id;
         $active_productsInsert = $db->prepare($active_productsSql)->execute();
 
         /*** Storage ***/
-        $storageSql = 'UPDATE storage SET quantity = '.$options['quantity'] .' WHERE productId = '. $id;
+        $storageSql = 'UPDATE storage SET quantity = ' . $options['quantity'] . ' WHERE productId = ' . $id;
         $storageInsert = $db->prepare($storageSql)->execute();
 
         /*** Images ***/
         if (!empty($options['images'])) {
-            $sql = 'DELETE FROM images WHERE productId = '.$id;
+            $sql = 'DELETE FROM images WHERE productId = ' . $id;
             $db->prepare($sql)->execute();
 
             $imagesSql = $db->prepare('INSERT INTO images (productId, url) VALUES (?,?)');
@@ -268,7 +254,7 @@ class Product
         }*/
 
         /*** Category ***/
-        $product_categorySql = 'UPDATE product_category SET categoryId = '. $options['categoryId'] .' WHERE productId = '. $id;
+        $product_categorySql = 'UPDATE product_category SET categoryId = ' . $options['categoryId'] . ' WHERE productId = ' . $id;
         $product_categoryInsert = $db->prepare($product_categorySql)->execute();
 
         /*** Discount ***/
@@ -282,7 +268,7 @@ class Product
         }*/
 
         /*** Price ***/
-        $product_priceSql = 'UPDATE product_price SET price = ' . $options['price'] . ' WHERE productId = '. $id;
+        $product_priceSql = 'UPDATE product_price SET price = ' . $options['price'] . ' WHERE productId = ' . $id;
         $product_priceInsert = $db->prepare($product_priceSql)->execute();
 
         if (
@@ -298,52 +284,48 @@ class Product
         return 0;
     }
 
-    public static function getBreadcrumbs($data) {
-        if (!isset($data['parent'])) return '<a href="/category/'. $data['id'] .'">'. $data['title'] . '</a>';
+    public static function getBreadcrumbs($data)
+    {
+        if (!isset($data['parent'])) return '<a href="/category/' . $data['id'] . '">' . $data['title'] . '</a>';
 
-        $result = self::getBreadcrumbs($data['parent']) . ' > <a href="/category/'. $data['id'] .'">'. $data['title'] . '</a>';
+        $result = self::getBreadcrumbs($data['parent']) . ' > <a href="/category/' . $data['id'] . '">' . $data['title'] . '</a>';
         return $result;
     }
 
-    /**
-     * Delete product from db
-     * @param $id
-     * @return array
-     */
     public static function delete($id)
     {
         $db = Db::getConnection();
 
         /*** Active products ***/
-        $sql = 'DELETE FROM active_products WHERE productId = '.$id;
+        $sql = 'DELETE FROM active_products WHERE productId = ' . $id;
         $result[] = $db->prepare($sql)->execute();
 
         /*** Storage ***/
-        $sql = 'DELETE FROM storage WHERE productId = '.$id;
+        $sql = 'DELETE FROM storage WHERE productId = ' . $id;
         $result[] = $db->prepare($sql)->execute();
 
         /*** Images ***/
-        $sql = 'DELETE FROM images WHERE productId = '.$id;
+        $sql = 'DELETE FROM images WHERE productId = ' . $id;
         $result[] = $db->prepare($sql)->execute();
 
         /*** Product category ***/
-        $sql = 'DELETE FROM product_category WHERE productId = '.$id;
+        $sql = 'DELETE FROM product_category WHERE productId = ' . $id;
         $result[] = $db->prepare($sql)->execute();
 
         /*** Product feature ***/
-        $sql = 'DELETE FROM product_feature WHERE productId = '.$id;
+        $sql = 'DELETE FROM product_feature WHERE productId = ' . $id;
         $result[] = $db->prepare($sql)->execute();
 
         /*** Product tag ***/
-        $sql = 'DELETE FROM product_tag WHERE productId = '.$id;
+        $sql = 'DELETE FROM product_tag WHERE productId = ' . $id;
         $result[] = $db->prepare($sql)->execute();
 
         /*** Price ***/
-        $sql = 'DELETE FROM product_price WHERE productId = '.$id;
+        $sql = 'DELETE FROM product_price WHERE productId = ' . $id;
         $result[] = $db->prepare($sql)->execute();
 
         /*** Product ***/
-        $sql = 'DELETE FROM product WHERE id = '.$id;
+        $sql = 'DELETE FROM product WHERE id = ' . $id;
         $result[] = $db->prepare($sql)->execute();
 
         return $result;

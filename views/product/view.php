@@ -1,17 +1,17 @@
 <?php include_once ROOT . '/views/layouts/header.php'; ?>
 <?php
-    if (!empty($product['tags'])) {
-        $tags = '';
-        for ($i = 0; $i < count($product['tags']); $i++) {
-            $tags .= $i == count($product['tags']) - 1 ? '<span class="tag">#'.$product['tags'][$i]['title'].'</span>' : '<span class="tag">#'.$product['tags'][$i]['title'] . '</span>, ';
-        }
+if (!empty($product['tags'])) {
+    $tags = '';
+    for ($i = 0; $i < count($product['tags']); $i++) {
+        $tags .= $i == count($product['tags']) - 1 ? '<span class="tag">#' . $product['tags'][$i]['title'] . '</span>' : '<span class="tag">#' . $product['tags'][$i]['title'] . '</span>, ';
     }
+}
 ?>
 <div class="container">
     <section class="single-product">
         <div class="breadcrumbs">
             <?php
-                echo Product::getBreadcrumbs($product['category']);
+            echo Product::getBreadcrumbs($product['category']);
             ?>
         </div>
         <div class="info-item title"><?= $product['title'] ?></div>
@@ -22,7 +22,7 @@
                 <div class="images">
                     <?php
                     foreach ($product['images'] as $image) {
-                        echo '<img src="/uploads/images/'. $image['url'] . '" alt="" class="mainImg">';
+                        echo '<img src="/uploads/images/' . $image['url'] . '" alt="" class="mainImg">';
                     }
                     ?>
                 </div>
@@ -35,7 +35,9 @@
             <div><b>Цена:</b> <span class="price__regular">&#8372;&nbsp;<?= $product['price'] ?></span></div>
             <?php if ($product['discounts'] != null) : ?>
                 <div><b>Скидка:</b> <?= intval($product['discounts'][0]['discount']) ?>%</div>
-                <div><b>Цена со скидкой:</b> <span class="price__new">&#8372;&nbsp;<?= $product['price'] - (intval($product['price']) *  intval($product['discounts'][0]['discount']) / 100)?></span></div>
+                <div><b>Цена со скидкой:</b> <span
+                            class="price__new">&#8372;&nbsp;<?= $product['price'] - (intval($product['price']) * intval($product['discounts'][0]['discount']) / 100) ?></span>
+                </div>
             <?php endif; ?>
         </div>
 
@@ -43,21 +45,21 @@
         <div class="info-item features">
             <?php foreach ($product['features'] as $feature) : ?>
                 <div class="feature">
-                    <span class="feature__title"><b><?= $feature['title']?>:</b> </span>
-                    <span class="feature__value"><?= $feature['value']?></span>
+                    <span class="feature__title"><b><?= $feature['title'] ?>:</b> </span>
+                    <span class="feature__value"><?= $feature['value'] ?></span>
                 </div>
             <?php endforeach; ?>
         </div>
         <?php if (!empty($product['tags'])) : ?>
-        <div class="info-item tags">
-            <b>Тэги:</b> <?= $tags ?>
-        </div>
+            <div class="info-item tags">
+                <b>Тэги:</b> <?= $tags ?>
+            </div>
         <?php endif; ?>
 
-        <a href="" class="btn-block">Добавить в корзину</a>
+        <a href="#" class="btn-block">Добавить в корзину</a>
     </section>
 
-    <?php if (isset($_SESSION['userRole']) && $_SESSION['userRole'] == '2') :?>
+    <?php if (isset($_SESSION['userRole']) && $_SESSION['userRole'] == '2') : ?>
         <div class="control-buttons">
             <a class="btn-block" href="/product/edit/<?= $product['id'] ?>">Редактировать</a>
             <a class="btn-block delete" href="/product/delete/<?= $product['id'] ?>">Удалить</a>

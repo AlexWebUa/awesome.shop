@@ -2,11 +2,6 @@
 
 class CabinetController
 {
-
-    /**
-     * Checks if user logged and shows cabinet
-     * @return bool
-     */
     public function actionIndex()
     {
         $userId = User::checkLogged();

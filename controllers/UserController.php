@@ -4,10 +4,6 @@
 class UserController
 {
 
-    /**
-     * Get values from form, checks them and register user if no errors
-     * @return bool
-     */
     public function actionRegister()
     {
         $result = false;
@@ -36,13 +32,6 @@ class UserController
         return true;
     }
 
-    /**
-     * Checks validity of form
-     * @param $name
-     * @param $email
-     * @param $password
-     * @return array|bool
-     */
     private function checkData($email, $password)
     {
         $errors = false;
@@ -62,15 +51,8 @@ class UserController
         return $errors;
     }
 
-    /**
-     * Checks validity of login form and redirects to cabinet if it's correct
-     * @return bool
-     */
     public function actionLogin()
     {
-        $email = '';
-        $password = '';
-
         if (isset($_POST['submit'])) {
             $options = [
                 'email' => $_POST['email'],
@@ -78,10 +60,11 @@ class UserController
             ];
             $errors = false;
 
-            if (!User::checkEmail($email)) {
+            if (!User::checkEmail($_POST['email'])) {
                 $errors[] = 'Неправильный email';
             }
-            if (!User::checkPassword($password)) {
+
+            if (!User::checkPassword($_POST['password'])) {
                 $errors[] = 'Пароль не может быть короче 6-ти символов';
             }
 
@@ -102,9 +85,6 @@ class UserController
         return true;
     }
 
-    /**
-     * Unset session 'user'
-     */
     public function actionLogout()
     {
         unset($_SESSION["userId"]);

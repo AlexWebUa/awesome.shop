@@ -14,10 +14,18 @@ body {
   display: flex;
   flex-direction: column; }
 
+h2 {
+  text-align: center;
+  margin-bottom: 15px; }
+
 a {
   color: inherit;
   text-decoration: none;
   transition: .3s color; }
+
+.text-error {
+  color: red;
+  font-size: 12px; }
 
 .header {
   position: relative;
@@ -59,6 +67,11 @@ a {
   justify-content: space-between; }
   .products .product {
     margin-bottom: 35px; }
+    .products .product.disabled {
+      filter: grayscale(1);
+      cursor: default; }
+      .products .product.disabled:hover {
+        background-color: unset; }
 
 .product {
   position: relative;
@@ -190,11 +203,12 @@ a {
 .btn-block {
   display: block;
   width: 100%;
+  box-sizing: border-box;
   text-align: center;
   color: #000;
-  font-size: 20px;
+  font-size: 18px;
   border-radius: 5px;
-  padding: 15px;
+  padding: 7px 15px;
   background-color: transparent;
   border: 1px solid #57EF82;
   transition: .3s all;
@@ -220,7 +234,13 @@ form {
     margin: 10px 0; }
     form label.flex-start {
       align-items: flex-start; }
-    form label select, form label input[type='date'], form label input[type='text'], form label input[type='number'], form label textarea {
+    form label select,
+    form label input[type='date'],
+    form label input[type='text'],
+    form label input[type='number'],
+    form label input[type='email'],
+    form label input[type='password'],
+    form label textarea {
       border: 2px solid #eee;
       border-radius: 5px;
       background: #eee;

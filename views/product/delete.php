@@ -1,18 +1,20 @@
 <?php include_once ROOT . '/views/layouts/header.php'; ?>
 
-<main>
-    <?php
-    $allGood = true;
-    foreach ($result as $value) {
-        if ($value == false) $allGood = false;
-    }
+<div class="container">
+    <section class="product-delete">
+        <?php
+        $allGood = true;
+        foreach ($result as $value) {
+            if ($value == false) $allGood = false;
+        }
 
-    if ($allGood) :
-    ?>
-    <h2>Product deleted</h2>
-    <?php else :?>
-    <h2>Error!</h2>
-    <?php endif ?>
-</main>
+        if ($allGood) :
+            ?>
+            <h2>Продукт удалён</h2>
+        <?php else :?>
+            <h2>Ошибка удаления!</h2>
+        <?php endif ?>
+    </section>
+</div>
 
 <?php include_once ROOT . '/views/layouts/footer.php'; ?>

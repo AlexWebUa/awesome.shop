@@ -3,7 +3,8 @@
 
 class Discount
 {
-    public static function getByProductId($productId) {
+    public static function getByProductId($productId)
+    {
         $productId = intval($productId);
 
         if ($productId) {
@@ -20,7 +21,8 @@ class Discount
         return false;
     }
 
-    public static function getRecentDiscounts($productId) {
+    public static function getRecentDiscounts($productId)
+    {
         $productId = intval($productId);
 
         if ($productId) {
@@ -28,8 +30,8 @@ class Discount
 
             $discounts = $db->query(
                 'SELECT * FROM discount '
-                .'WHERE discount.productId =' . $productId
-                .' AND CURRENT_TIMESTAMP < discount.finishDate AND completedBeforeDeadline = 0'
+                . 'WHERE discount.productId =' . $productId
+                . ' AND CURRENT_TIMESTAMP < discount.finishDate AND completedBeforeDeadline = 0'
             );
             $discounts->setFetchMode(PDO::FETCH_ASSOC);
 

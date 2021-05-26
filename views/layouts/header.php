@@ -17,13 +17,13 @@
     <div class="header__links">
         <a class="class" href="/cart/">
             Корзина
-            <span id="cart-count">(<?= Cart::countItems(); ?>)</span>
+            <span id="cart-count">(0)</span>
         </a>
         <?php if (User::isGuest()): ?>
             <a class="login" href="/user/login/">Вход</a>
             <a class="register" href="/user/register/">Регистрация</a>
         <?php else: ?>
-            <?php if ($_SESSION['userRole'] == '2') :?>
+            <?php if ($_SESSION['userRole'] == '2') : ?>
                 <a class="product-add" href="/product/add">Добавить продукт</a>
             <?php endif; ?>
             <a class="cabinet" href="/cabinet/"><?= $_SESSION['userEmail'] ?></a>

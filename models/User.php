@@ -64,7 +64,7 @@ class User
 
         $db = Db::getConnection();
 
-        $sql = 'SELECT COUNT(*) FROM user WHERE email = "'. $email .'"';
+        $sql = 'SELECT COUNT(*) FROM user WHERE email = "' . $email . '"';
 
         $result = $db->prepare($sql);
         $result->execute();
@@ -107,6 +107,20 @@ class User
         $_SESSION['userEmail'] = self::getEmail($userId);
     }
 
+    public static function getRole($id)
+    {
+        $db = Db::getConnection();
+        $sql = $db->query('SELECT roleId FROM user WHERE id = ' . $id);
+        return $sql->fetchColumn();
+    }
+
+    public static function getEmail($id)
+    {
+        $db = Db::getConnection();
+        $sql = $db->query('SELECT email FROM user WHERE id = ' . $id);
+        return $sql->fetchColumn();
+    }
+
     /**
      * Checks if user id is in session
      * @return mixed
@@ -120,18 +134,6 @@ class User
         header("Location: /user/login");
 
         return true;
-    }
-
-    public static function getRole($id) {
-        $db = Db::getConnection();
-        $sql = $db->query('SELECT roleId FROM user WHERE id = '. $id);
-        return $sql->fetchColumn();
-    }
-
-    public static function getEmail($id) {
-        $db = Db::getConnection();
-        $sql = $db->query('SELECT email FROM user WHERE id = '. $id);
-        return $sql->fetchColumn();
     }
 
     /**
@@ -151,7 +153,8 @@ class User
         return $result->fetch();
     }
 
-    public static function getRolePermissions($roleId) {
+    public static function getRolePermissions($roleId)
+    {
         $db = Db::getConnection();
         $sql = 'SELECT permission.title, role_permission.* FROM role_permission LEFT JOIN permission ON permission.id = role_permission.permissionId WHERE role_permission.roleId = :roleId';
         $result = $db->prepare($sql);

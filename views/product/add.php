@@ -29,6 +29,7 @@
 
             <br><br>
             БЛОК СКИДКИ:
+            <?= isset($errors['discountDates']) ? '<span class="text-error">'.$errors['discountDates'].'</span>' : '' ?>
             <label>Размер: <input type="number" name="discount" min="0" max="100" onkeypress="return event.charCode >= 48"></label>
             <label>Дата начала: <input type="date" name="startDate"></label>
             <label>Дата конца: <input type="date" name="finishDate"></label>
