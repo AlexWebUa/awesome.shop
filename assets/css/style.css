@@ -134,6 +134,54 @@ a {
     margin: 0 3px;
     border-radius: 3px; }
 
+.breadcrumbs {
+  font-size: 20px; }
+  .breadcrumbs a {
+    color: #35868e; }
+
+.single-product .title {
+  font-size: 32px;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 50px; }
+.single-product .gallery {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start; }
+  .single-product .gallery .mainImg {
+    width: 600px;
+    height: auto; }
+  .single-product .gallery .images {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: auto;
+    flex-wrap: wrap;
+    margin-left: 50px; }
+    .single-product .gallery .images img {
+      width: 150px;
+      height: 150px;
+      margin-left: 15px; }
+
+.control-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center; }
+  .control-buttons a {
+    display: block;
+    width: 100%;
+    max-width: 25%;
+    text-align: center;
+    color: #000;
+    font-size: 20px;
+    border-radius: 5px;
+    padding: 15px;
+    border: 1px solid #57EF82;
+    transition: .3s all; }
+    .control-buttons a:hover {
+      background: #57EF82; }
+
 /*
 
 h2 {

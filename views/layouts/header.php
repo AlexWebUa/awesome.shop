@@ -23,8 +23,10 @@
             <a class="login" href="/user/login/">Вход</a>
             <a class="register" href="/user/register/">Регистрация</a>
         <?php else: ?>
-            <a class="product-add" href="/product/add">Добавить продукт</a>
-            <a class="cabinet" href="/cabinet/">Кабинет</a>
+            <?php if ($_SESSION['userRole'] == '2') :?>
+                <a class="product-add" href="/product/add">Добавить продукт</a>
+            <?php endif; ?>
+            <a class="cabinet" href="/cabinet/"><?= $_SESSION['userEmail'] ?></a>
             <a class="logout" href="/user/logout/">Выход</a>
         <?php endif; ?>
     </div>

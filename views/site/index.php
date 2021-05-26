@@ -3,7 +3,6 @@
 <div class="container">
     <section class="products">
         <?php foreach ($latestProducts as $product): ?>
-        <?php /*var_dump($product); */?>
             <div class="product<?php if($product['discount'] != null) echo ' discount'; if (!$product['isActive']) echo ' disabled'; ?>">
                 <a href="<?= '/product/' . $product['id'] ?>">
                     <img src="/uploads/images/<?= $product['mainImg'] ?>" alt="" class="product__img">

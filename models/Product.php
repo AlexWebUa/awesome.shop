@@ -229,8 +229,7 @@ class Product
             'title' => $options['title'],
             'description' => $options['description'],
             'metatitle' => $options['metatitle'],
-            'mainImg' => $options['mainImg'],
-            'price' => $options['price']
+            'mainImg' => $options['mainImg']
         ];
         $productSql = 'UPDATE product SET '
             . 'title = :title, '
@@ -250,12 +249,15 @@ class Product
         $storageInsert = $db->prepare($storageSql)->execute();
 
         /*** Images ***/
-        /*if (!empty($options['images'])) {
+        if (!empty($options['images'])) {
+            $sql = 'DELETE FROM images WHERE productId = '.$id;
+            $db->prepare($sql)->execute();
+
             $imagesSql = $db->prepare('INSERT INTO images (productId, url) VALUES (?,?)');
             foreach ($options['images'] as $image) {
-                $imagesSql->execute([$productId, $image['url']]);
+                $imagesSql->execute([$id, $image['url']]);
             }
-        }*/
+        }
 
         /*** Tags ***/
         /*if (!empty($options['tags'])) {
@@ -280,7 +282,7 @@ class Product
         }*/
 
         /*** Price ***/
-        $product_priceSql = 'INSERT INTO product_price (productId, price) VALUES (' . $productId . ', ' . $options['price'] . ')';
+        $product_priceSql = 'UPDATE product_price SET price = ' . $options['price'] . ' WHERE productId = '. $id;
         $product_priceInsert = $db->prepare($product_priceSql)->execute();
 
         if (
@@ -296,34 +298,12 @@ class Product
         return 0;
     }
 
-    /*public static function update($id, $options)
-    {
-        $db = Db::getConnection();
+    public static function getBreadcrumbs($data) {
+        if (!isset($data['parent'])) return '<a href="/category/'. $data['id'] .'">'. $data['title'] . '</a>';
 
-        $sql = "UPDATE products
-            SET
-                name = :name,
-                code = :code,
-                price = :price,
-                brand = :brand,
-                image = :image,
-                description = :description,
-                is_new = :is_new,
-                is_available = :is_available
-            WHERE id = :id";
-
-        $result = $db->prepare($sql);
-        $result->bindParam(':id', $id, PDO::PARAM_INT);
-        $result->bindParam(':name', $options['name'], PDO::PARAM_STR);
-        $result->bindParam(':code', $options['code'], PDO::PARAM_STR);
-        $result->bindParam(':price', $options['price'], PDO::PARAM_STR);
-        $result->bindParam(':brand', $options['brand'], PDO::PARAM_STR);
-        $result->bindParam(':image', $options['image'], PDO::PARAM_STR);
-        $result->bindParam(':description', $options['description'], PDO::PARAM_STR);
-        $result->bindParam(':is_new', $options['is_new'], PDO::PARAM_INT);
-        $result->bindParam(':is_available', $options['is_available'], PDO::PARAM_INT);
-        return $result->execute();
-    }*/
+        $result = self::getBreadcrumbs($data['parent']) . ' > <a href="/category/'. $data['id'] .'">'. $data['title'] . '</a>';
+        return $result;
+    }
 
     /**
      * Delete product from db

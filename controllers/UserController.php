@@ -109,6 +109,7 @@ class UserController
     {
         unset($_SESSION["userId"]);
         unset($_SESSION["userRole"]);
+        unset($_SESSION["userEmail"]);
         header("Location: /");
     }
 

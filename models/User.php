@@ -104,6 +104,7 @@ class User
     {
         $_SESSION['userId'] = $userId;
         $_SESSION['userRole'] = self::getRole($userId);
+        $_SESSION['userEmail'] = self::getEmail($userId);
     }
 
     /**
@@ -124,6 +125,12 @@ class User
     public static function getRole($id) {
         $db = Db::getConnection();
         $sql = $db->query('SELECT roleId FROM user WHERE id = '. $id);
+        return $sql->fetchColumn();
+    }
+
+    public static function getEmail($id) {
+        $db = Db::getConnection();
+        $sql = $db->query('SELECT email FROM user WHERE id = '. $id);
         return $sql->fetchColumn();
     }
 

@@ -111,9 +111,9 @@ class ProductController
 
                 if ($id) {
                     if (is_uploaded_file($_FILES["mainImg"]["tmp_name"])) {
-                        $fullPath = $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$imageName}";
-                        if (!file_exists($fullPath))
-                            move_uploaded_file($_FILES["mainImg"]["tmp_name"], $fullPath);
+                        $mainImg = $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$imageName}";
+                        if (!file_exists($mainImg))
+                            move_uploaded_file($_FILES["mainImg"]["tmp_name"], $mainImg);
                     }
 
                     if ($_FILES['images'] != null) {
@@ -201,12 +201,12 @@ class ProductController
                 $options['mainImg'] = 'product-photo.png';
             }
 
-            /*if (isset($_FILES['images']) && $_FILES['images']['error'][0] != 4) {
+            if (isset($_FILES['images']) && $_FILES['images']['error'][0] != 4) {
                 for ($i = 0; $i < count($_FILES['images']['name']); $i++) {
                     $imageName = $_FILES['images']['name'][$i];
                     $options['images'][] = ['url' => $imageName];
                 }
-            }*/
+            }
 
             /*if ($_POST['tags'] != null) {
                 $tags = explode(' ', $_POST['tags']);
@@ -248,18 +248,18 @@ class ProductController
                 $success = Product::update($productId, $options);
 
                 if (is_uploaded_file($_FILES["mainImg"]["tmp_name"])) {
-                    $fullPath = $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$imageName}";
-                    if (!file_exists($fullPath))
-                        move_uploaded_file($_FILES["mainImg"]["tmp_name"], $fullPath);
+                    $mainImg = $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$imageName}";
+                    if (!file_exists($mainImg))
+                        move_uploaded_file($_FILES["mainImg"]["tmp_name"], $mainImg);
                 }
 
-                /*if ($_FILES['images'] != null) {
+                if ($_FILES['images'] != null) {
                     for ($i = 0; $i < count($_FILES['images']['name']); $i++) {
                         $fullPath = $_SERVER['DOCUMENT_ROOT'] . "/uploads/images/{$_FILES['images']['name'][$i]}";
                         if (!file_exists($fullPath))
                             move_uploaded_file($_FILES['images']['tmp_name'][$i], $fullPath);
                     }
-                }*/
+                }
 
                 if ($success) header("Location: /product/" . $productId);
             }
