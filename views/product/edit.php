@@ -36,6 +36,7 @@ if (!empty($product['tags'])) {
                 <label>Metatitle: <input type="text" name="metatitle" placeholder="" value="<?= $product['metatitle'] ?? '' ?>"></label>
                 <label>Active: <input type="checkbox" name="isActive" <?= $product['isActive'] ? 'checked' : '' ?> value="1"></label>
                 <label>Quantity*: <input type="number" name="quantity" min="0" onkeypress="return event.charCode >= 48" required value="<?= $product['quantity'] ?? '' ?>"></label>
+                <label>Price*: <input type="number" name="price" min="0" onkeypress="return event.charCode >= 48" required value="<?= $product['price'] ?? '' ?>"></label>
                 <label>Main image: <input type="file" name="mainImg"></label>
                 <label>Additional image(s): <input type="file" name="images[]" multiple></label>
                 <label>Tags: <input type="text" name="tags" value="<?= $tags ?? '' ?>"></label>

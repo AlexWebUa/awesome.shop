@@ -4,7 +4,7 @@
 class Product
 {
 
-    const SHOW_BY_DEFAULT = 10;
+    const SHOW_BY_DEFAULT = 8;
 
     /**
      * Returns an array of latest products
@@ -16,7 +16,7 @@ class Product
         $count = intval($count);
         $db = Db::getConnection();
 
-        $result = $db->query('SELECT product.id, product.title, product.description, product.mainImg, discount.discount, active_products.isActive '
+        $result = $db->query('SELECT product.id, product.title, product.description, product.mainImg, discount.discount, active_products.isActive, product_price.price '
             . 'FROM product '
             . 'LEFT JOIN active_products ON product.id = active_products.productId '
             . 'LEFT JOIN discount '
@@ -24,6 +24,7 @@ class Product
                 . 'AND discount.completedBeforeDeadline = "0" '
                 . 'AND CURRENT_TIMESTAMP > startDate '
                 . 'AND CURRENT_TIMESTAMP < finishDate '
+            . 'LEFT JOIN product_price ON product.id = product_price.productId '
             . 'ORDER BY id DESC '
             . 'LIMIT ' . $count . ' '
             . 'OFFSET ' . $offset );
@@ -47,10 +48,11 @@ class Product
 
             /*** Product ***/
             $product = $db->query(
-                'SELECT product.*, active_products.isActive, storage.quantity '
+                'SELECT product.*, active_products.isActive, storage.quantity, product_price.price '
                 . 'FROM product '
                 . 'LEFT JOIN active_products ON product.id = active_products.productId ' // isActive
                 . 'LEFT JOIN storage ON product.id = storage.productId ' // quantity
+                . 'LEFT JOIN product_price ON product.id = product_price.productId '
                 . 'WHERE product.id = ' . $id
             );
             $product->setFetchMode(PDO::FETCH_ASSOC);
@@ -133,6 +135,7 @@ class Product
             'description' => $options['description'],
             'metatitle' => $options['metatitle'],
             'mainImg' => $options['mainImg'],
+            'price' => $options['price']
         ];
         $productSql = 'INSERT INTO product (title, description, metatitle, mainImg) VALUES (:title, :description, :metatitle, :mainImg)';
         $productInsert = $db->prepare($productSql)->execute($productData);
@@ -175,12 +178,16 @@ class Product
             $discountInsert->execute();
         }
 
+        /*** Price ***/
+        $product_priceSql = 'INSERT INTO product_price (productId, price) VALUES (' . $productId . ', ' . $options['price'] . ')';
+        $product_priceInsert = $db->prepare($product_priceSql)->execute();
+
         if (
             $productInsert &&
             $active_productsInsert &&
             $storageInsert &&
             $product_categoryInsert &&
-            $discountInsert
+            $product_priceInsert
         ) {
             return $productId;
         }
@@ -223,6 +230,7 @@ class Product
             'description' => $options['description'],
             'metatitle' => $options['metatitle'],
             'mainImg' => $options['mainImg'],
+            'price' => $options['price']
         ];
         $productSql = 'UPDATE product SET '
             . 'title = :title, '
@@ -271,11 +279,16 @@ class Product
             $discountInsert->execute();
         }*/
 
+        /*** Price ***/
+        $product_priceSql = 'INSERT INTO product_price (productId, price) VALUES (' . $productId . ', ' . $options['price'] . ')';
+        $product_priceInsert = $db->prepare($product_priceSql)->execute();
+
         if (
             $productInsert &&
             $active_productsInsert &&
             $storageInsert &&
-            $product_categoryInsert
+            $product_categoryInsert &&
+            $product_priceInsert
         ) {
             return 1;
         }
@@ -343,6 +356,10 @@ class Product
 
         /*** Product tag ***/
         $sql = 'DELETE FROM product_tag WHERE productId = '.$id;
+        $result[] = $db->prepare($sql)->execute();
+
+        /*** Price ***/
+        $sql = 'DELETE FROM product_price WHERE productId = '.$id;
         $result[] = $db->prepare($sql)->execute();
 
         /*** Product ***/

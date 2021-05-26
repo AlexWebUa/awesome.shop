@@ -10,36 +10,22 @@
 </head>
 <body>
 
-<header>
-    <div class="header-logo">
-        <h1>
-            <a href="/">Awesome.shop</a>
-        </h1>
+<header class="header">
+    <div class="header__logo">
+        <a href="/">Awesome.shop</a>
     </div>
-    <ul class="user-block">
-        <li class="cart">
-            <a href="/cart/">
-                Корзина
-                <span id="cart-count">(<?= Cart::countItems(); ?>)</span>
-            </a>
-        </li>
+    <div class="header__links">
+        <a class="class" href="/cart/">
+            Корзина
+            <span id="cart-count">(<?= Cart::countItems(); ?>)</span>
+        </a>
         <?php if (User::isGuest()): ?>
-            <li class="login">
-                <a href="/user/login/">Вход</a>
-            </li>
-            <li class="register">
-                <a href="/user/register/">Регистрация</a>
-            </li>
+            <a class="login" href="/user/login/">Вход</a>
+            <a class="register" href="/user/register/">Регистрация</a>
         <?php else: ?>
-            <li>
-                <a href="/product/add">Добавить продукт</a>
-            </li>
-            <li class="cabinet">
-                <a href="/cabinet/">Кабинет</a>
-            </li>
-            <li class="login">
-                <a href="/user/logout/">Выход</a>
-            </li>
+            <a class="product-add" href="/product/add">Добавить продукт</a>
+            <a class="cabinet" href="/cabinet/">Кабинет</a>
+            <a class="logout" href="/user/logout/">Выход</a>
         <?php endif; ?>
-    </ul>
+    </div>
 </header>

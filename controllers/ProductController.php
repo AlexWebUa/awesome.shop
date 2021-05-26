@@ -27,6 +27,7 @@ class ProductController
                 'metatitle' => $_POST['metatitle'] ?? null,
                 'isActive' => $_POST['isActive'] ?? '0',
                 'quantity' => $_POST['quantity'],
+                'price' => $_POST['price'],
                 'images' => $_POST['images'] ?? null,
                 'tags' => $_POST['tags'] ?? null,
                 'categoryId' => $_POST['categoryId'],
@@ -186,6 +187,7 @@ class ProductController
                 'metatitle' => $_POST['metatitle'] ?? '',
                 'isActive' => $_POST['isActive'] ?? '0',
                 'quantity' => $_POST['quantity'],
+                'price' => $_POST['price'],
                 'tags' => $_POST['tags'] ?? null,
                 'categoryId' => $_POST['categoryId']
             ];
