@@ -142,13 +142,24 @@ class User
     public static function get($id)
     {
         $db = Db::getConnection();
-        $sql = 'SELECT * FROM user WHERE id = :id';
+        $sql = 'SELECT user.*, role.title AS role FROM user LEFT JOIN role ON role.id = user.roleId WHERE user.id = :id';
         $result = $db->prepare($sql);
         $result->bindParam(':id', $id, PDO::PARAM_INT);
         $result->setFetchMode(PDO::FETCH_ASSOC);
         $result->execute();
 
         return $result->fetch();
+    }
+
+    public static function getRolePermissions($roleId) {
+        $db = Db::getConnection();
+        $sql = 'SELECT permission.title, role_permission.* FROM role_permission LEFT JOIN permission ON permission.id = role_permission.permissionId WHERE role_permission.roleId = :roleId';
+        $result = $db->prepare($sql);
+        $result->bindParam(':roleId', $roleId, PDO::PARAM_INT);
+        $result->setFetchMode(PDO::FETCH_ASSOC);
+        $result->execute();
+
+        return $result->fetchAll();
     }
 
     /**

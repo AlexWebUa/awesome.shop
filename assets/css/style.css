@@ -8,6 +8,12 @@
   font-family: Helvetica, sans-serif;
   line-height: 1.2; }
 
+body {
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column; }
+
 a {
   color: inherit;
   text-decoration: none;
@@ -162,127 +168,82 @@ a {
       width: 150px;
       height: 150px;
       margin-left: 15px; }
+.single-product .info-item {
+  margin-bottom: 15px; }
+.single-product .features {
+  padding-left: 20px; }
+  .single-product .features .feature {
+    display: list-item;
+    list-style: disc inside; }
+.single-product .tags .tag {
+  color: blue;
+  cursor: pointer; }
 
 .control-buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center; }
-  .control-buttons a {
-    display: block;
-    width: 100%;
-    max-width: 25%;
-    text-align: center;
-    color: #000;
-    font-size: 20px;
-    border-radius: 5px;
-    padding: 15px;
-    border: 1px solid #57EF82;
-    transition: .3s all; }
-    .control-buttons a:hover {
-      background: #57EF82; }
+  .control-buttons .btn-block {
+    max-width: 25%; }
 
-/*
-
-h2 {
-    font-size: 4em;
-    text-align: center;
-    margin: 20px 0;
-}
-
-section.products {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.product {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 315px;
-    margin: 20px;
-
-    h3 {
-        margin: 5px 0;
-    }
-
-    .product-image {
-        width: 315px;
-        height: 315px;
-        align-self: center;
-    }
-
-    .product-short-description {
-        max-height: 150px;
-        overflow: hidden;
-    }
-
-    .new {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 60px;
-    }
-
-    .to-cart {
-        padding: 10px;
-        margin: 5px 0;
-    }
-}
-
-.single-product {
-    margin-left: 15px;
-
-    h2 {
-        font-size: 2em;
-        text-align: left;
-    }
-
-    .to-cart {
-        padding: 20px;
-        font-size: 18px;
-    }
-}
-
-footer {
-    text-align: center;
-    margin: 5px 0;
-}
+.btn-block {
+  display: block;
+  width: 100%;
+  text-align: center;
+  color: #000;
+  font-size: 20px;
+  border-radius: 5px;
+  padding: 15px;
+  background-color: transparent;
+  border: 1px solid #57EF82;
+  transition: .3s all;
+  margin: 20px auto;
+  cursor: pointer; }
+  .btn-block:hover {
+    background-color: #57EF82; }
+  .btn-block.delete {
+    border: 1px solid firebrick; }
+    .btn-block.delete:hover {
+      color: #ffffff;
+      background-color: firebrick; }
 
 form {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: auto; }
+  form label {
     display: flex;
-    flex-direction: column;
-    max-width: 600px;
-    margin: auto;
+    flex-direction: row;
+    align-items: center;
+    margin: 10px 0; }
+    form label.flex-start {
+      align-items: flex-start; }
+    form label select, form label input[type='date'], form label input[type='text'], form label input[type='number'], form label textarea {
+      border: 2px solid #eee;
+      border-radius: 5px;
+      background: #eee;
+      padding: 5px;
+      margin-left: 5px;
+      width: 100%; }
+    form label textarea {
+      resize: vertical; }
+    form label input[type='checkbox'], form label input[type='file'] {
+      margin: auto 0 auto 5px; }
+    form label select, form label input[type='date'], form label input[type='number'] {
+      width: auto; }
 
-    input {
-        border: 2px solid #eee;
-        border-radius: 5px;
-        background: #eee;
-        padding: 5px;
-        margin: 10px 0;
-    }
-}
-
-.cabinet {
-    padding: 0 20px;
-
-    h4 {
-        margin: 10px 0;
-        font-size: 20px;
-    }
-}
-
-table {
-    border-collapse: collapse;
-    margin: auto;
-    text-align: center;
-
-    td, th {
-        border: 1px solid gray;
-        padding: 10px;
-    }
-}
-*/
+.footer {
+  position: relative;
+  padding: 10px 20px;
+  background-color: #221f1f;
+  color: #fff;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  margin-top: 50px; }
+  .footer a {
+    color: #57EF82; }
 
 /*# sourceMappingURL=style.css.map */

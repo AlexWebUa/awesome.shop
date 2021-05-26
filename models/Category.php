@@ -30,7 +30,7 @@ class Category
         return false;
     }
 
-    public static function getParentCategories($categoryArray)
+    public static function getParentCategories(&$categoryArray)
     {
         if ($categoryArray['parentId'] == null) {
             return $categoryArray;

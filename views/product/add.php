@@ -1,58 +1,41 @@
 <?php include_once ROOT . '/views/layouts/header.php'; ?>
 
-<main>
-    <h2>Add product</h2>
+<div class="container">
+    <section class="product-add">
+        <form action="#" method="post" enctype="multipart/form-data">
 
-    <?php if (isset($errors) && is_array($errors)): ?>
-        <ul>
-            <?php foreach ($errors as $error): ?>
-                <li> - <?php echo $error; ?></li>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
+            <label>Название*: <input type="text" name="title" placeholder="" value="<?= $_POST['title'] ?? '' ?>" required></label>
+            <label class="flex-start">Описание*: <textarea name="description" cols="30" rows="10" required><?= $_POST['description'] ?? '' ?></textarea></label>
+            <label>Метаописание: <input type="text" name="metatitle" placeholder="" value="<?= $_POST['metatitle'] ?? '' ?>"></label>
+            <label>Доступен: <input type="checkbox" name="isActive" checked value="1"></label>
+            <label>Количество*: <input type="number" name="quantity" min="0" onkeypress="return event.charCode >= 48" required value="<?= $_POST['quantity'] ?? '' ?>"></label>
+            <label>Цена*: <input type="number" name="price" min="0" onkeypress="return event.charCode >= 48" required value="<?= $_POST['price'] ?? '' ?>"></label>
+            <label>Главная картинка: <input type="file" name="mainImg"></label>
+            <label>Дополнительные картинки: <input type="file" name="images[]" multiple></label>
+            <label>Тэги: <input type="text" name="tags"></label>
 
-    <div>
-        <div>
-            <form action="#" method="post" enctype="multipart/form-data">
+            <label>
+                Категория:
+                <select name="categoryId">
+                    <?php
+                    $categories = Category::get();
 
-                <label>Title*: <input type="text" name="title" placeholder="" value="<?= $_POST['title'] ?? '' ?>" required></label>
-                <label>Description*: <textarea name="description" cols="30" rows="10" required><?= $_POST['description'] ?? '' ?></textarea></label>
-                <label>Metatitle: <input type="text" name="metatitle" placeholder="" value="<?= $_POST['metatitle'] ?? '' ?>"></label>
-                <label>Active: <input type="checkbox" name="isActive" checked value="1"></label>
-                <label>Quantity*: <input type="number" name="quantity" min="0" onkeypress="return event.charCode >= 48" required value="<?= $_POST['quantity'] ?? '' ?>"></label>
-                <label>Price*: <input type="number" name="price" min="0" onkeypress="return event.charCode >= 48" required value="<?= $_POST['price'] ?? '' ?>"></label>
-                <label>Main image: <input type="file" name="mainImg"></label>
-                <label>Additional image(s): <input type="file" name="images[]" multiple></label>
-                <label>Tags: <input type="text" name="tags"></label>
+                    foreach ($categories as $category) {
+                        echo '<option value="'.$category['id'].'">'.$category['title'].'</option>';
+                    }
+                    ?>
+                </select>
+            </label>
 
-                <label>
-                    Category:
-                    <select name="categoryId">
-                        <?php
-                        $categories = Category::get();
+            <br><br>
+            БЛОК СКИДКИ:
+            <label>Размер: <input type="number" name="discount" min="0" max="100" onkeypress="return event.charCode >= 48"></label>
+            <label>Дата начала: <input type="date" name="startDate"></label>
+            <label>Дата конца: <input type="date" name="finishDate"></label>
 
-                        foreach ($categories as $category) {
-                            echo '<option value="'.$category['id'].'">'.$category['title'].'</option>';
-                        }
-                        ?>
-                    </select>
-                </label>
-
-                <br>
-                DISCOUNT:
-
-                <label>Discount size: <input type="number" name="discount" min="0" max="100" onkeypress="return event.charCode >= 48"></label>
-                <label>Start date: <input type="date" name="startDate"></label>
-                <label>Finish date: <input type="date" name="finishDate"></label>
-
-
-                <input type="submit" name="submit" value="Submit">
-
-                <br/><br/>
-
-            </form>
-        </div>
-    </div>
-</main>
+            <input class="btn-block" type="submit" name="submit" value="Добавить">
+        </form>
+    </section>
+</div>
 
 <?php include_once ROOT . '/views/layouts/footer.php'; ?>
