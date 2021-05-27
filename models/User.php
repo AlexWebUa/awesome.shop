@@ -22,10 +22,19 @@ class User
             'email' => $options['email'],
             'passwordHash' => $options['passwordHash']
         ];
-        $sql = 'INSERT INTO user (firstName, lastName, email, passwordHash, roleId) '
-            . 'VALUES (:firstName, :lastName, :email, :passwordHash, 1)';
-        $result = $db->prepare($sql);
-        return $result->execute($data) ? $userId : false;
+
+        try {
+            $db->beginTransaction();
+            $sql = 'INSERT INTO user (firstName, lastName, email, passwordHash, roleId) '
+                . 'VALUES (:firstName, :lastName, :email, :passwordHash, 1)';
+            $sql = $db->prepare($sql);
+            $result = $sql->execute($data);
+            $db->commit();
+            return $result;
+        } catch (Exception $e) {
+            $db->rollBack();
+            return false;
+        }
     }
 
     /**

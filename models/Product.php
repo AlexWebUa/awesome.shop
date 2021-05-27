@@ -119,8 +119,7 @@ class Product
             'title' => $options['title'],
             'description' => $options['description'],
             'metatitle' => $options['metatitle'],
-            'mainImg' => $options['mainImg'],
-            'price' => $options['price']
+            'mainImg' => $options['mainImg']
         ];
         $productSql = 'INSERT INTO product (title, description, metatitle, mainImg) VALUES (:title, :description, :metatitle, :mainImg)';
         $productInsert = $db->prepare($productSql)->execute($productData);

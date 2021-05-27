@@ -29,10 +29,10 @@
     </section>
 
     <?php
-    if ($totalNumber > 10):
+    if ($totalNumber > 8):
         ?>
         <div class="pagination">
-            <?php for ($i = 0; $i < ceil($totalNumber / 10); $i++) : ?>
+            <?php for ($i = 0; $i < ceil($totalNumber / 8); $i++) : ?>
                 <a href="/?offset=<?= $i * 8 ?>"><?= $i + 1 ?></a>
             <?php endfor; ?>
         </div>

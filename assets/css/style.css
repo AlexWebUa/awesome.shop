@@ -58,7 +58,8 @@ a {
 
 .container {
   margin: auto;
-  max-width: 1280px; }
+  max-width: 1280px;
+  width: 100%; }
 
 .products {
   display: flex;
